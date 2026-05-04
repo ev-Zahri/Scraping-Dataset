@@ -74,7 +74,10 @@ Operasinya:
 
 Setelah data didapatkan jalankan terminal dengan
 1.  python extract_bulk.py [file.json] -> untuk mengekstraksi file dengan 1 file saja
-    python .\extract_bulk.py [folder json] -> untuk mengekstraksi seluruh file yang ada di folder tersebut
+    => python .\extract_bulk.py twitter_bulk_5_responses.json -> Untuk mengekstrak 1 file dengan nama twitter_bulk_5_responses.json
+
+    python extract_bulk.py [folder json] -> untuk mengekstraksi seluruh file yang ada di folder tersebut
+    => python .\extract_bulk.py raw_json -> Untuk mengekstrak semua file di folder raw_json
 
 2.  python combine_json.py -> untuk menggabungkan isi file yang sudah ada all_tweets_combined.json dengan file terbaru [file-bulk-extract.json] dari extract bulk
 

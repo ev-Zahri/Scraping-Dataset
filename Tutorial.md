@@ -5,7 +5,6 @@ Buka browser (apapun) terus paste
 let responseCount = 0;
 let allResponses = [];
 
-// Fungsi untuk save manual
 window.saveTwitterData = function() {
     if (allResponses.length === 0) {
         console.log('❌ Tidak ada data untuk disimpan!');
@@ -21,14 +20,12 @@ window.saveTwitterData = function() {
     console.log(`💾 Saved ${responseCount} responses!`);
 };
 
-// Fungsi untuk stop capture
 window.stopCapture = function() {
     console.log('🛑 Capture stopped!');
     console.log(`📊 Total responses captured: ${responseCount}`);
     window.saveTwitterData();
 };
 
-// Intercept XMLHttpRequest
 (function() {
     const originalOpen = XMLHttpRequest.prototype.open;
     const originalSend = XMLHttpRequest.prototype.send;
@@ -46,11 +43,6 @@ window.stopCapture = function() {
                     responseCount++;
                     allResponses.push(data);
                     console.log(`✅ Response #${responseCount} captured!`);
-                    
-                    // Auto-save setiap 10 response
-                    // if (responseCount % 10 === 0) {
-                    //     window.saveTwitterData();
-                    // }
                 } catch (e) {}
             }
         });
@@ -82,3 +74,18 @@ Setelah data didapatkan jalankan terminal dengan
 2.  python combine_json.py -> untuk menggabungkan isi file yang sudah ada all_tweets_combined.json dengan file terbaru [file-bulk-extract.json] dari extract bulk
 
 3.  python json_to_csv.py -> untuk mengubah format file menjadi csv
+
+
+========== UPDATED ===========
+Kode program mengalami perubahan menjadi 1 file logic berisi semua program
+extracted_raw_json.py
+1. Sebelum dijalankan perlu menyimpan file semua respon (RAW) di folder raw_json
+2. Jalankan python extracted_raw_json.py "raw_json/"
+3. Langsung menghasilkan output all_tweets_combined.json dan all_tweets_combined.csv di dalam folder extracted_json
+
+# Jika ingin spesifik dengan 1 file bisa dengan
+python extracted_raw_json.py "raw_json/twitter_data_1.json"
+
+# Untuk tutorial
+python extracted_raw_json.py --help
+==============================

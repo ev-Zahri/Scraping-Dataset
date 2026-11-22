@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_blank" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed-variant": "#004c69", "surface-container-high": "#292a2f", "on-secondary": "#131e8c", "surface-tint": "#7bd0ff", "primary": "#8ed5ff", "surface-dim": "#121318", "on-primary-fixed": "#001e2c", "surface-container-lowest": "#0d0e13", "outline-variant": "#3e484f", "surface-container-highest": "#34343a", "on-surface-variant": "#bdc8d1", "error": "#ffb4ab", "on-secondary-fixed-variant": "#2f3aa3", "primary-fixed-dim": "#7bd0ff", "primary-container": "#38bdf8", "surface-variant": "#34343a", "outline": "#87929a", "on-tertiary": "#003825", "on-secondary-fixed": "#000767", "tertiary-container": "#22c990", "surface": "#121318", "background": "#121318", "tertiary-fixed-dim": "#45dfa4", "inverse-surface": "#e3e1e9", "on-error": "#690005", "secondary-container": "#2f3aa3", "inverse-primary": "#00668a", "tertiary-fixed": "#68fcbf", "on-tertiary-container": "#004e35", "inverse-on-surface": "#2f3036", "on-primary-container": "#004965", "on-primary": "#00354a", "secondary-fixed": "#e0e0ff", "on-secondary-container": "#a8afff", "surface-container-low": "#1a1b21", "on-background": "#e3e1e9", "error-container": "#93000a", "primary-fixed": "#c4e7ff", "on-surface": "#e3e1e9", "surface-bright": "#38393f", "secondary-fixed-dim": "#bdc2ff", "tertiary": "#4ee6aa", "on-tertiary-fixed": "#002114", "on-error-container": "#ffdad6", "on-tertiary-fixed-variant": "#005137", "surface-container": "#1e1f25", "secondary": "#bdc2ff" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "gutter-lg": "1.5rem", "space-2xl": "2rem", "space-xs": "0.25rem", "space-md": "0.75rem", "space-sm": "0.5rem", "margin-lg": "2rem", "space-2xs": "0.125rem", "space-xl": "1.5rem", "gutter": "1rem", "margin-md": "1.5rem", "space-lg": "1rem", "margin": "1rem" }, "fontFamily": { "code-inline": [ "JetBrains Mono" ], "body-muted": [ "Geist" ], "body-strong": [ "Geist" ], "headline-sm": [ "Geist" ], "display-lg": [ "Geist" ], "body-default": [ "Geist" ], "label-sm": [ "JetBrains Mono" ], "headline-md": [ "Geist" ], "display-lg-mobile": [ "Geist" ], "meta-numeric": [ "JetBrains Mono" ], "code-block": [ "JetBrains Mono" ] }, "fontSize": { "code-inline": [ "12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" } ], "body-muted": [ "13px", { "lineHeight": "18px", "letterSpacing": "-0.005em", "fontWeight": "400" } ], "body-strong": [ "14px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500" } ], "headline-sm": [ "16px", { "lineHeight": "22px", "letterSpacing": "-0.015em", "fontWeight": "500" } ], "display-lg": [ "32px", { "lineHeight": "38px", "letterSpacing": "-0.03em", "fontWeight": "600" } ], "body-default": [ "14px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "400" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "500" } ], "headline-md": [ "22px", { "lineHeight": "28px", "letterSpacing": "-0.02em", "fontWeight": "500" } ], "display-lg-mobile": [ "26px", { "lineHeight": "32px", "letterSpacing": "-0.025em", "fontWeight": "600" } ], "meta-numeric": [ "12px", { "lineHeight": "16px", "letterSpacing": "-0.01em", "fontWeight": "500" } ], "code-block": [ "13px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface-container-lowest font-body-default text-body-default text-on-surface min-h-screen"><main class="w-full min-h-screen flex flex-col items-center justify-center p-gutter md:p-gutter-lg"><div class="flex flex-col w-full max-w-6xl mx-auto py-10 px-6 gap-y-6">
+<!-- Header Context & Action Bar -->
+<header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-outline-variant/30">
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-3">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">Dataset Scraped X</h1>
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm border border-outline-variant/40">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+          Ready
+        </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm border border-outline-variant/30">
+          12 Kolom Aktif
+        </span>
+</div>
+<p class="font-body-muted text-body-muted text-on-surface-variant">Menampilkan 4,270 tweet hasil ekstraksi gabungan 2 file payload.</p>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 flex-wrap">
+<button class="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-body-strong text-body-strong border border-outline-variant/40 text-xs">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">arrow_back</span>
+<span>Kembali ke Konfigurasi</span>
+</button>
+<div class="h-4 w-px bg-outline-variant/40 mx-1"></div>
+<button class="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-body-strong text-body-strong border border-outline-variant/40 text-xs">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">file_download</span>
+<span>Export CSV</span>
+</button>
+<button class="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-primary-container text-on-primary-container hover:bg-primary font-body-strong text-body-strong transition-colors text-xs">
+<span class="material-symbols-outlined text-[16px]">data_object</span>
+<span>Export JSON</span>
+</button>
+</div>
+</header>
+<!-- Metric Summary Strip -->
+<section class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="p-3.5 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Tweet</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-meta-numeric text-xl text-on-surface font-semibold">4,270</span>
+<span class="font-label-sm text-label-sm text-tertiary font-mono">+100% matched</span>
+</div>
+</div>
+<div class="p-3.5 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Akun Unik</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-meta-numeric text-xl text-on-surface font-semibold">1,842</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">43.1% density</span>
+</div>
+</div>
+<div class="p-3.5 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Interaksi</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-meta-numeric text-xl text-on-surface font-semibold">184.2K</span>
+<span class="font-label-sm text-label-sm text-primary font-mono">43.1 / tweet</span>
+</div>
+</div>
+<div class="p-3.5 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Rentang Waktu</span>
+<div class="flex items-baseline justify-between mt-1">
+<span class="font-meta-numeric text-xl text-on-surface font-semibold">24 Jam</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">UTC+7 Realtime</span>
+</div>
+</div>
+</section>
+<!-- Filter & Query Control Strip -->
+<section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface-container-low p-2 rounded border border-outline-variant/30">
+<div class="relative flex-1 flex items-center min-w-0">
+<span class="material-symbols-outlined text-[18px] text-outline absolute left-3 pointer-events-none">search</span>
+<input class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline/70 pl-9 pr-3 py-1.5 text-xs font-code-inline rounded border border-outline-variant/40 focus:outline-none focus:border-primary transition-colors" placeholder="Cari keyword, username (@...), atau Tweet ID..." type="text"/>
+<div class="absolute right-2.5 flex items-center pointer-events-none">
+<kbd class="text-[10px] font-mono text-outline bg-surface-container px-1 py-0.5 rounded border border-outline-variant/40">⌘F</kbd>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-auto">
+<div class="relative">
+<select class="appearance-none bg-surface-container-lowest text-on-surface-variant hover:text-on-surface pl-3 pr-8 py-1.5 text-xs font-body-default rounded border border-outline-variant/40 focus:outline-none focus:border-primary cursor-pointer transition-colors">
+<option>Semua Bahasa (All)</option>
+<option>Bahasa Indonesia (id)</option>
+<option>English (en)</option>
+</select>
+<span class="material-symbols-outlined text-[16px] text-outline absolute right-2 top-2 pointer-events-none">expand_more</span>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-surface-container-lowest text-on-surface-variant hover:text-on-surface text-xs font-body-default border border-outline-variant/40 transition-colors">
+<span class="material-symbols-outlined text-[14px] text-primary">verified</span>
+<span>Hanya Terverifikasi</span>
+</button>
+<button class="p-1.5 rounded bg-surface-container-lowest text-outline hover:text-on-surface border border-outline-variant/40 transition-colors" title="Kustomisasi Kolom">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+</button>
+</div>
+</section>
+<!-- Clean Utilitarian Data View -->
+<section class="w-full overflow-hidden rounded border border-outline-variant/30 bg-surface-container-lowest">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/30 bg-surface-container-low/60 text-outline font-label-sm text-label-sm uppercase select-none tracking-wider">
+<th class="w-10 px-4 py-2.5">
+<input class="w-3.5 h-3.5 rounded bg-surface border border-outline-variant/60 text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer accent-primary" type="checkbox"/>
+</th>
+<th class="px-3 py-2.5 font-mono text-[11px]">Tweet ID</th>
+<th class="px-3 py-2.5 font-mono text-[11px]">Waktu</th>
+<th class="px-3 py-2.5 font-mono text-[11px]">Author</th>
+<th class="px-4 py-2.5 font-sans min-w-[340px]">Konten Tweet</th>
+<th class="px-3 py-2.5 font-mono text-[11px] text-right">Reply</th>
+<th class="px-3 py-2.5 font-mono text-[11px] text-right">RT</th>
+<th class="px-3 py-2.5 font-mono text-[11px] text-right">Like</th>
+<th class="px-3 py-2.5 font-mono text-[11px] text-right">Views</th>
+<th class="px-4 py-2.5 font-mono text-[11px] text-center">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20 font-body-default text-xs">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors group">
+<td class="px-4 py-3 align-top">
+<input class="w-3.5 h-3.5 rounded bg-surface border border-outline-variant/60 cursor-pointer accent-primary" type="checkbox"/>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline-variant text-[11px] whitespace-nowrap">
+<span class="text-on-surface-variant font-medium">179401928410</span>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-[11px] whitespace-nowrap">12m ago</td>
+<td class="px-3 py-3 align-top whitespace-nowrap">
+<div class="flex items-center gap-1 font-mono text-primary text-[12px]">
+<span>@techinasia_id</span>
+<span class="material-symbols-outlined text-[13px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</td>
+<td class="px-4 py-3 align-top text-on-surface leading-relaxed max-w-md">
+<p class="line-clamp-2">Perkembangan ekosistem startup AI di Asia Tenggara melonjak signifikan kuartal ini didorong adopsi infrastruktur model lokal.</p>
+</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">18</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">142</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface text-right font-medium">1.2k</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-right">45.2k</td>
+<td class="px-4 py-3 align-top text-center whitespace-nowrap">
+<button class="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/30 transition-colors">
+<span>JSON</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors group">
+<td class="px-4 py-3 align-top">
+<input class="w-3.5 h-3.5 rounded bg-surface border border-outline-variant/60 cursor-pointer accent-primary" type="checkbox"/>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline-variant text-[11px] whitespace-nowrap">
+<span class="text-on-surface-variant font-medium">179401784922</span>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-[11px] whitespace-nowrap">28m ago</td>
+<td class="px-3 py-3 align-top whitespace-nowrap">
+<div class="flex items-center gap-1 font-mono text-on-surface text-[12px]">
+<span>@datascience_id</span>
+</div>
+</td>
+<td class="px-4 py-3 align-top text-on-surface leading-relaxed max-w-md">
+<p class="line-clamp-2">Tutorial ekstraksi payload tweet client-side tanpa rate limit via DOM MutationObserver dan session cookie pooling.</p>
+</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">45</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">380</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface text-right font-medium">2.8k</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-right">89.1k</td>
+<td class="px-4 py-3 align-top text-center whitespace-nowrap">
+<button class="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/30 transition-colors">
+<span>JSON</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors group">
+<td class="px-4 py-3 align-top">
+<input class="w-3.5 h-3.5 rounded bg-surface border border-outline-variant/60 cursor-pointer accent-primary" type="checkbox"/>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline-variant text-[11px] whitespace-nowrap">
+<span class="text-on-surface-variant font-medium">179401655019</span>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-[11px] whitespace-nowrap">1h ago</td>
+<td class="px-3 py-3 align-top whitespace-nowrap">
+<div class="flex items-center gap-1 font-mono text-on-surface text-[12px]">
+<span>@gadgetin_fan</span>
+</div>
+</td>
+<td class="px-4 py-3 align-top text-on-surface leading-relaxed max-w-md">
+<p class="line-clamp-2">Review pemakaian baterai flagship terbaru setelah update firmware minggu ini. Screen-on-time tembus 8 jam idle lebih adem.</p>
+</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">92</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">215</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface text-right font-medium">3.4k</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-right">110.4k</td>
+<td class="px-4 py-3 align-top text-center whitespace-nowrap">
+<button class="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/30 transition-colors">
+<span>JSON</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors group">
+<td class="px-4 py-3 align-top">
+<input class="w-3.5 h-3.5 rounded bg-surface border border-outline-variant/60 cursor-pointer accent-primary" type="checkbox"/>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline-variant text-[11px] whitespace-nowrap">
+<span class="text-on-surface-variant font-medium">179401229045</span>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-[11px] whitespace-nowrap">2h ago</td>
+<td class="px-3 py-3 align-top whitespace-nowrap">
+<div class="flex items-center gap-1 font-mono text-primary text-[12px]">
+<span>@infobmkg</span>
+<span class="material-symbols-outlined text-[13px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</td>
+<td class="px-4 py-3 align-top text-on-surface leading-relaxed max-w-md">
+<p class="line-clamp-2">Peringatan dini cuaca Jabodetabek: potensi hujan sedang hingga lebat disertai kilat dan angin kencang di wilayah selatan.</p>
+</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">14</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">890</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface text-right font-medium">4.1k</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-right">145.0k</td>
+<td class="px-4 py-3 align-top text-center whitespace-nowrap">
+<button class="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/30 transition-colors">
+<span>JSON</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors group">
+<td class="px-4 py-3 align-top">
+<input class="w-3.5 h-3.5 rounded bg-surface border border-outline-variant/60 cursor-pointer accent-primary" type="checkbox"/>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline-variant text-[11px] whitespace-nowrap">
+<span class="text-on-surface-variant font-medium">179400918231</span>
+</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-[11px] whitespace-nowrap">3h ago</td>
+<td class="px-3 py-3 align-top whitespace-nowrap">
+<div class="flex items-center gap-1 font-mono text-primary text-[12px]">
+<span>@kemkominfo</span>
+<span class="material-symbols-outlined text-[13px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</td>
+<td class="px-4 py-3 align-top text-on-surface leading-relaxed max-w-md">
+<p class="line-clamp-2">Penyelenggaraan sertifikasi talenta digital nasional resmi dibuka mulai hari ini dengan 15 skema spesialisasi keahlian komputasi awan.</p>
+</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">8</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">76</td>
+<td class="px-3 py-3 align-top font-mono text-on-surface text-right font-medium">890</td>
+<td class="px-3 py-3 align-top font-mono text-outline text-right">32.5k</td>
+<td class="px-4 py-3 align-top text-center whitespace-nowrap">
+<button class="inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/30 transition-colors">
+<span>JSON</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination Footer -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-outline-variant/30 bg-surface-container-low/40">
+<div class="flex items-center gap-3">
+<span class="font-mono text-xs text-outline">
+          Menampilkan <span class="text-on-surface font-medium">1-10</span> dari <span class="text-on-surface font-medium">4,270</span> tweet
+        </span>
+<div class="h-3 w-px bg-outline-variant/40"></div>
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-outline">
+<span>Baris:</span>
+<select class="bg-surface-container border border-outline-variant/30 text-on-surface text-[11px] font-mono px-1 py-0.5 rounded focus:outline-none">
+<option>10</option>
+<option>25</option>
+<option>50</option>
+<option>100</option>
+</select>
+</div>
+</div>
+<!-- Pagination Navigation Buttons -->
+<div class="flex items-center gap-1">
+<button class="p-1 rounded bg-surface-container text-outline hover:text-on-surface border border-outline-variant/30 disabled:opacity-40 disabled:pointer-events-none" disabled="">
+<span class="material-symbols-outlined text-[16px]">first_page</span>
+</button>
+<button class="p-1 rounded bg-surface-container text-outline hover:text-on-surface border border-outline-variant/30 disabled:opacity-40 disabled:pointer-events-none" disabled="">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+</button>
+<div class="flex items-center gap-1 px-1">
+<button class="min-w-[26px] h-[26px] px-1.5 rounded bg-surface-container-highest text-primary font-mono text-[11px] font-semibold border border-outline-variant/50">1</button>
+<button class="min-w-[26px] h-[26px] px-1.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-mono text-[11px] border border-outline-variant/30 transition-colors">2</button>
+<button class="min-w-[26px] h-[26px] px-1.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-mono text-[11px] border border-outline-variant/30 transition-colors">3</button>
+<span class="px-1 text-outline font-mono text-[11px]">...</span>
+<button class="min-w-[26px] h-[26px] px-1.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-mono text-[11px] border border-outline-variant/30 transition-colors">427</button>
+</div>
+<button class="p-1 rounded bg-surface-container text-outline hover:text-on-surface border border-outline-variant/30 transition-colors">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+<button class="p-1 rounded bg-surface-container text-outline hover:text-on-surface border border-outline-variant/30 transition-colors">
+<span class="material-symbols-outlined text-[16px]">last_page</span>
+</button>
+</div>
+</div>
+</section>
+</div></main></body></html>

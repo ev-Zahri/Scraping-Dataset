@@ -2,3 +2,4 @@ extracted_json
 extracted_json_lama
 temp_tweets
 venv
+__pycache__

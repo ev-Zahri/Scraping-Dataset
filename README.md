@@ -109,3 +109,8 @@ Langkah terakhir untuk mempermudah analisis, konversi file JSON gabungan tersebu
 python json_to_csv.py
 ```
 *Skrip ini secara otomatis akan membaca `all_tweets_combined.json` dan menghasilkan file `all_tweets_combined.csv` dengan rapi.*
+
+### Cara jalankan interface (dashboard)
+```bash
+streamlit run app.py
+```

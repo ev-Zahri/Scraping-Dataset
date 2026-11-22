@@ -809,33 +809,8 @@
 
         try {
           const combinedPayloads = stagedFiles.map(f => f.data);
-          let extractedResult = [];
-
-          // Coba panggil backend API jika tersedia
-          try {
-            const response = await fetch('/api/parse', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                payloads: combinedPayloads,
-                columns: activeColumns
-              })
-            });
-
-            if (response.ok) {
-              const result = await response.json();
-              if (result.success && result.tweets && result.tweets.length > 0) {
-                extractedResult = result.tweets;
-              }
-            }
-          } catch (netErr) {
-            console.log('Backend API offline / serverless bypass, menggunakan client-side engine.');
-          }
-
-          // Fallback ke Client-side extraction engine jika API offline atau deploy di static host (GitHub Pages)
-          if (!extractedResult || extractedResult.length === 0) {
-            extractedResult = extractTweetsClientSide(combinedPayloads);
-          }
+          // Ekstraksi langsung di browser menggunakan engine yang identik dengan extract_bulk.py & combine_json.py
+          const extractedResult = extractTweetsClientSide(combinedPayloads);
 
           parsedTweets = extractedResult || [];
           if (parsedTweets.length === 0) {

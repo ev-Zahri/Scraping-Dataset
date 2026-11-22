@@ -720,6 +720,83 @@
         });
       });
 
+      // Client-side extraction engine identical to extract_bulk.py & combine_json.py
+      function extractTweetsFromResponse(data) {
+        const tweets = [];
+        try {
+          const instructions = data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions || [];
+          for (const instr of instructions) {
+            if (instr?.type === 'TimelineAddEntries') {
+              const entries = instr?.entries || [];
+              for (const entry of entries) {
+                const entryId = entry?.entryId || '';
+                if (entryId.startsWith('tweet-')) {
+                  try {
+                    const tweetResults = entry?.content?.itemContent?.tweet_results?.result;
+                    if (!tweetResults) continue;
+                    const legacy = tweetResults.legacy || {};
+                    const userCore = tweetResults.core?.user_results?.result?.core || {};
+                    const username = userCore.screen_name || '';
+                    const userName = userCore.name || '';
+                    const tweetId = legacy.id_str || '';
+                    tweets.push({
+                      id: tweetId,
+                      full_text: legacy.full_text || '',
+                      created_at: legacy.created_at || '',
+                      username: username,
+                      user_name: userName,
+                      likes: legacy.favorite_count || 0,
+                      retweets: legacy.retweet_count || 0,
+                      replies: legacy.reply_count || 0,
+                      views: tweetResults.views?.count || '0',
+                      tweet_url: (username && tweetId) ? `https://twitter.com/${username}/status/${tweetId}` : ''
+                    });
+                  } catch (e) {
+                    continue;
+                  }
+                }
+              }
+            }
+          }
+        } catch (e) {}
+        return tweets;
+      }
+
+      function extractTweetsClientSide(payloads) {
+        const allTweets = [];
+        for (const payload of payloads) {
+          if (Array.isArray(payload)) {
+            for (const item of payload) {
+              if (item && typeof item === 'object') {
+                if (item.data) {
+                  allTweets.push(...extractTweetsFromResponse(item));
+                } else if (item.id && item.full_text) {
+                  allTweets.push(item);
+                } else {
+                  allTweets.push(...extractTweetsFromResponse(item));
+                }
+              }
+            }
+          } else if (payload && typeof payload === 'object') {
+            allTweets.push(...extractTweetsFromResponse(payload));
+          }
+        }
+        return removeDuplicates(allTweets);
+      }
+
+      function removeDuplicates(tweets) {
+        const seenIds = new Set();
+        const unique = [];
+        for (const t of tweets) {
+          const id = t.id;
+          if (id && !seenIds.has(id)) {
+            seenIds.add(id);
+            unique.push(t);
+          }
+        }
+        return unique;
+      }
+
       // Submit and Parse Payload
       btnSubmit.addEventListener('click', async () => {
         if (stagedFiles.length === 0) {
@@ -731,23 +808,36 @@
         btnSubmit.innerHTML = '<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>Mengurai Payload...</span>';
 
         try {
-          // Gabungkan semua payload
           const combinedPayloads = stagedFiles.map(f => f.data);
-          const response = await fetch('/api/parse', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              payloads: combinedPayloads,
-              columns: activeColumns
-            })
-          });
+          let extractedResult = [];
 
-          const result = await response.json();
-          if (!result.success) {
-            throw new Error(result.error || 'Parsing gagal dilakukan oleh engine');
+          // Coba panggil backend API jika tersedia
+          try {
+            const response = await fetch('/api/parse', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                payloads: combinedPayloads,
+                columns: activeColumns
+              })
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              if (result.success && result.tweets && result.tweets.length > 0) {
+                extractedResult = result.tweets;
+              }
+            }
+          } catch (netErr) {
+            console.log('Backend API offline / serverless bypass, menggunakan client-side engine.');
           }
 
-          parsedTweets = result.tweets || [];
+          // Fallback ke Client-side extraction engine jika API offline atau deploy di static host (GitHub Pages)
+          if (!extractedResult || extractedResult.length === 0) {
+            extractedResult = extractTweetsClientSide(combinedPayloads);
+          }
+
+          parsedTweets = extractedResult || [];
           if (parsedTweets.length === 0) {
             showValidationError('Tidak ada tweet yang berhasil diekstrak. Pastikan berkas JSON berisi respon SearchTimeline yang valid.');
             btnSubmit.disabled = false;
@@ -758,6 +848,15 @@
           // Transition to View 2
           viewSetup.classList.add('hidden');
           viewTable.classList.remove('hidden');
+
+          // Initialize Table View
+          initTableView();
+        } catch (err) {
+          showValidationError('Terjadi kesalahan saat memproses data: ' + err.message);
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = '<span class="material-symbols-outlined text-base">table_view</span><span>Muat Data ke Tabel (Submit)</span><span class="font-code-inline text-xs ml-1 opacity-70">↵</span>';
+        }
+      });
 
           // Initialize Table View
           initTableView();

@@ -1,3 +1,2 @@
-requests
-pandas
-streamlit
+# No external dependencies required.
+# Uses Python standard library only (json, csv, os, sys, http.server).

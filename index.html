@@ -152,14 +152,14 @@
           </div>
           <div class="flex flex-col gap-1">
             <p class="font-body-strong text-sm text-on-surface">
-              Tarik berkas <span class="font-code-inline text-primary">.json</span> hasil scraping ke sini
+              Tarik berkas <span class="font-code-inline text-primary">.json</span> atau <span class="font-code-inline text-primary">.html</span> hasil scraping ke sini
             </p>
             <p class="font-body-muted text-xs text-on-surface-variant">
-              Khusus file JSON resmi dari SearchTimeline Twitter (Maksimal 50MB)
+              Mendukung HTML DOM Twitter (timeline-search.html), JSON SearchTimeline, dan Komentar YouTube (Maksimal 50MB)
             </p>
           </div>
           <div class="flex items-center gap-2.5 mt-2">
-            <input accept=".json" class="hidden" id="file-input" multiple type="file"/>
+            <input accept=".json,.html,.htm" class="hidden" id="file-input" multiple type="file"/>
             <button class="h-8 px-4 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-body-strong text-xs transition-colors flex items-center gap-1.5 shadow-sm" onclick="document.getElementById('file-input').click()" type="button">
               <span class="material-symbols-outlined text-sm">folder_open</span>
               Pilih File
@@ -517,8 +517,7 @@
 
       /**
        * VALIDASI KETAT INPUT BERKAS JSON
-       * Memastikan berkas berasal dari response XHR SearchTimeline Twitter
-       * atau objek tweet yang terstruktur.
+       * Mendukung response XHR SearchTimeline Twitter dan Komentar YouTube
        */
       function validateTwitterPayload(data) {
         if (!data) {
@@ -531,7 +530,7 @@
             return { valid: false, message: 'Berkas JSON berupa array kosong.' };
           }
 
-          // Cek apakah ada minimal 1 elemen yang memiliki struktur Twitter SearchTimeline atau Extracted Tweet
+          // Cek apakah ada minimal 1 elemen yang memiliki struktur Twitter SearchTimeline atau Komentar YouTube
           const hasValidStructure = data.some(item => {
             if (!item || typeof item !== 'object') return false;
 
@@ -548,13 +547,18 @@
               return true;
             }
 
+            // YouTube comment object (author + text)
+            if (('author' in item || 'author_name' in item) && ('text' in item || 'comment' in item)) {
+              return true;
+            }
+
             return false;
           });
 
           if (!hasValidStructure) {
             return {
               valid: false,
-              message: 'Struktur data tidak valid. Berkas JSON harus berupa tangkapan XHR SearchTimeline dari Twitter/X (misalnya dari auto-capture console).'
+              message: 'Struktur data tidak valid. Berkas JSON harus berupa tangkapan SearchTimeline Twitter/X atau Komentar YouTube.'
             };
           }
 
@@ -618,15 +622,27 @@
           const item = document.createElement('div');
           item.className = 'file-item flex items-center justify-between px-3.5 py-2.5 bg-surface-container rounded-lg border border-outline-variant/30';
           const sizeKb = (file.size / 1024).toFixed(1);
+          let badgeText = 'Valid SearchTimeline';
+          let iconName = 'data_object';
+          if (file.fileType === 'html_twitter') {
+            badgeText = `Valid Twitter HTML (${file.count || file.data.length} tweets)`;
+            iconName = 'code';
+          } else if (file.fileType === 'html_youtube') {
+            badgeText = `Valid YouTube HTML (${file.count || file.data.length} komentar)`;
+            iconName = 'comment';
+          } else if (file.fileType === 'json_tweets') {
+            badgeText = `Valid Dataset (${file.count || file.data.length} items)`;
+          }
+
           item.innerHTML = `
             <div class="flex items-center gap-3 min-w-0">
-              <span class="material-symbols-outlined text-primary text-lg">data_object</span>
+              <span class="material-symbols-outlined text-primary text-lg">${iconName}</span>
               <div class="flex items-baseline gap-2 min-w-0">
                 <span class="font-code-inline text-xs text-on-surface truncate">${file.name}</span>
                 <span class="font-meta-numeric text-xs text-outline">&bull;</span>
                 <span class="font-meta-numeric text-xs text-on-surface-variant">${sizeKb} KB</span>
                 <span class="font-meta-numeric text-xs text-outline">&bull;</span>
-                <span class="font-meta-numeric text-xs text-tertiary">Valid SearchTimeline</span>
+                <span class="font-meta-numeric text-xs text-tertiary">${badgeText}</span>
               </div>
             </div>
             <button type="button" class="w-6 h-6 rounded flex items-center justify-center text-outline hover:text-error hover:bg-error-container/20 transition-colors" title="Hapus file">
@@ -649,34 +665,234 @@
         }
       }
 
+      // HTML Parser Helper for Twitter / X
+      function parseMetricNumber(str) {
+        if (!str) return 0;
+        const clean = str.toLowerCase().replace(/\s+/g, '');
+        let mult = 1;
+        if (clean.includes('rb') || clean.includes('k')) mult = 1000;
+        else if (clean.includes('jt') || clean.includes('m')) mult = 1000000;
+        const num = clean.replace(/[^\d.,]/g, '').replace(/,/g, '.');
+        return Math.round((parseFloat(num) || 0) * mult);
+      }
+
+      function extractTweetsFromXHtmlText(htmlContent) {
+        const tweets = [];
+        const seenIds = new Set();
+        const articles = htmlContent.split(/<article\b/i);
+
+        for (let i = 1; i < articles.length; i++) {
+          const art = articles[i];
+          let tweetId = '';
+          let tweetUrl = '';
+          const statusMatch = art.match(/href="([^"]*\/status\/(\d+)[^"]*)"/i);
+          if (statusMatch) {
+            tweetUrl = statusMatch[1].startsWith('http') ? statusMatch[1] : `https://x.com${statusMatch[1]}`;
+            tweetId = statusMatch[2];
+          }
+
+          let username = '';
+          const handleMatch = art.match(/@([a-zA-Z0-9_]{1,15})/);
+          if (handleMatch) username = `@${handleMatch[1]}`;
+
+          let user_name = '';
+          const nameMatch = art.match(/class="[^"]*font-bold[^"]*truncate[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
+                            art.match(/class="[^"]*truncate[^"]*font-bold[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
+                            art.match(/data-testid="User-Name"[\s\S]*?<span[^>]*>([^<]+)<\/span>/i);
+          if (nameMatch) {
+            user_name = nameMatch[1].replace(/<[^>]+>/g, '').trim();
+          } else if (username) {
+            user_name = username.replace('@', '');
+          }
+
+          let full_text = '';
+          const textMatch = art.match(/class="[^"]*text-body[^"]*whitespace-pre-wrap[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
+                            art.match(/data-testid="tweetText"[^>]*>([\s\S]*?)<\/div>/i);
+          if (textMatch) {
+            full_text = textMatch[1]
+              .replace(/<br\s*[\/]?>/gi, '\n')
+              .replace(/<[^>]+>/g, '')
+              .replace(/&amp;/g, '&')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&quot;/g, '"')
+              .replace(/&#39;/g, "'")
+              .trim();
+          }
+
+          if (!full_text) continue;
+
+          if (!tweetId) {
+            tweetId = `x_${username}_${full_text.substring(0, 20)}`.replace(/\s+/g, '_');
+          }
+          if (seenIds.has(tweetId)) continue;
+          seenIds.add(tweetId);
+
+          const metricMatch = art.match(/aria-label="([^"]*(?:balasan|posting ulang|suka|tampilan|replies|reposts|likes|views)[^"]*)"/i);
+          const metricStr = metricMatch ? metricMatch[1] : '';
+
+          let replies = 0, retweets = 0, likes = 0, views = 0;
+          const repM = metricStr.match(/([\d.,KkMmbjt]+)\s*(?:balasan|replies|reply)/i);
+          if (repM) replies = parseMetricNumber(repM[1]);
+          const rtM = metricStr.match(/([\d.,KkMmbjt]+)\s*(?:posting ulang|reposts|retweets|repost|retweet)/i);
+          if (rtM) retweets = parseMetricNumber(rtM[1]);
+          const likeM = metricStr.match(/([\d.,KkMmbjt]+)\s*(?:suka|likes|like)/i);
+          if (likeM) likes = parseMetricNumber(likeM[1]);
+          const viewM = metricStr.match(/([\d.,KkMmbjt]+)\s*(?:tampilan|views|view)/i);
+          if (viewM) views = parseMetricNumber(viewM[1]);
+
+          let created_at = '';
+          const timeMatch = art.match(/<time[^>]*datetime="([^"]*)"/i) ||
+                            art.match(/href="[^"]*\/status\/\d+"[^>]*>([^<]+)<\/a>/i);
+          if (timeMatch) created_at = timeMatch[1].trim();
+
+          tweets.push({
+            id: tweetId,
+            full_text: full_text,
+            created_at: created_at,
+            username: username,
+            user_name: user_name,
+            likes: likes,
+            retweets: retweets,
+            replies: replies,
+            views: views,
+            tweet_url: tweetUrl
+          });
+        }
+        return tweets;
+      }
+
+      function extractYouTubeCommentsFromHtmlText(htmlContent) {
+        const comments = [];
+        const blocks = htmlContent.split(/<ytd-comment-view-model\b/i);
+        for (let i = 1; i < blocks.length; i++) {
+          const block = blocks[i];
+          const textMatch = block.match(/id="content-text"[^>]*>([\s\S]*?)<\/yt-attributed-string>/i);
+          if (!textMatch) continue;
+          const rawText = textMatch[1].replace(/<[^>]+>/g, '').trim();
+          if (!rawText) continue;
+
+          let author = '';
+          const authorMatch = block.match(/id="author-text"[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/i);
+          if (authorMatch) author = authorMatch[2].replace(/<[^>]+>/g, '').trim();
+
+          let publishedTime = '';
+          let commentId = '';
+          const timeMatch = block.match(/id="published-time-text"[^>]*>[\s\S]*?<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/i);
+          if (timeMatch) {
+            const href = timeMatch[1];
+            publishedTime = timeMatch[2].replace(/<[^>]+>/g, '').trim();
+            const lcMatch = href.match(/(?:[?&]|&amp;)lc=([^&"]+)/);
+            if (lcMatch) commentId = lcMatch[1];
+          }
+
+          let likes = 0;
+          const likeMatch = block.match(/id="like-button"[\s\S]*?aria-label="([^"]*)"/i);
+          if (likeMatch) {
+            const aria = likeMatch[1];
+            const numMatch = aria.match(/bersama\s+([\d.,]+)\s+orang/i) || aria.match(/([\d.,]+)\s+suka/i) ||
+                             aria.match(/along with ([\d.,]+)/i) || aria.match(/([\d.,]+)\s+like/i);
+            if (numMatch) likes = parseMetricNumber(numMatch[1]);
+          }
+
+          const isPinned = block.includes('id="pinned-comment-badge"') && block.includes('ytw-pinned-comment-badge-renderer');
+          if (!commentId) commentId = `yt_${i}_${Date.now()}`;
+
+          comments.push({
+            id: commentId,
+            author: author,
+            author_url: author ? `https://www.youtube.com/${author}` : '',
+            text: rawText,
+            likes: likes,
+            published_time: publishedTime,
+            is_pinned: isPinned
+          });
+        }
+        return comments;
+      }
+
       function handleFilesAddition(files) {
         hideValidationError();
         let invalidCount = 0;
         let lastErrorMessage = '';
 
         Array.from(files).forEach(file => {
-          if (!file.name.toLowerCase().endsWith('.json')) {
+          const lowerName = file.name.toLowerCase();
+          const isJson = lowerName.endsWith('.json');
+          const isHtml = lowerName.endsWith('.html') || lowerName.endsWith('.htm');
+
+          if (!isJson && !isHtml) {
             invalidCount++;
-            lastErrorMessage = `Berkas "${file.name}" ditolak karena bukan berformat .json.`;
+            lastErrorMessage = `Berkas "${file.name}" ditolak karena bukan berformat .json atau .html.`;
             return;
           }
 
           const reader = new FileReader();
           reader.onload = (evt) => {
+            const textContent = evt.target.result;
+
+            if (isHtml) {
+              // Deteksi Twitter HTML atau YouTube HTML
+              if (textContent.includes('<article') || textContent.includes('x.com') || textContent.includes('timeline-search')) {
+                const tweets = extractTweetsFromXHtmlText(textContent);
+                if (tweets.length === 0) {
+                  showValidationError(`Berkas HTML "${file.name}" tidak memuat elemen <article> tweet Twitter/X yang valid.`);
+                  return;
+                }
+                if (!stagedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                  stagedFiles.push({
+                    name: file.name,
+                    size: file.size,
+                    fileType: 'html_twitter',
+                    count: tweets.length,
+                    data: tweets
+                  });
+                  updateInterfaceState();
+                }
+              } else if (textContent.includes('ytd-comment') || textContent.includes('ytd-comment-view-model')) {
+                const comments = extractYouTubeCommentsFromHtmlText(textContent);
+                if (comments.length === 0) {
+                  showValidationError(`Berkas HTML "${file.name}" tidak memuat elemen komentar YouTube yang valid.`);
+                  return;
+                }
+                if (!stagedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                  stagedFiles.push({
+                    name: file.name,
+                    size: file.size,
+                    fileType: 'html_youtube',
+                    count: comments.length,
+                    data: comments
+                  });
+                  updateInterfaceState();
+                }
+              } else {
+                showValidationError(`Berkas HTML "${file.name}" bukan format dokumen Twitter atau YouTube yang dikenali.`);
+              }
+              return;
+            }
+
+            // JSON file
             try {
-              const jsonContent = JSON.parse(evt.target.result);
-              // Lakukan Validasi Ketat
+              const jsonContent = JSON.parse(textContent);
               const validation = validateTwitterPayload(jsonContent);
               if (!validation.valid) {
                 showValidationError(`Berkas "${file.name}" tidak valid: ${validation.message}`);
                 return;
               }
 
-              // Cek duplikasi file staged
+              let fileType = 'json_timeline';
+              let count = 0;
+              if (Array.isArray(jsonContent) && jsonContent.length > 0 && jsonContent[0].id && jsonContent[0].full_text) {
+                fileType = 'json_tweets';
+                count = jsonContent.length;
+              }
+
               if (!stagedFiles.some(f => f.name === file.name && f.size === file.size)) {
                 stagedFiles.push({
                   name: file.name,
                   size: file.size,
+                  fileType: fileType,
+                  count: count,
                   data: jsonContent
                 });
                 updateInterfaceState();
@@ -772,6 +988,20 @@
                   allTweets.push(...extractTweetsFromResponse(item));
                 } else if (item.id && item.full_text) {
                   allTweets.push(item);
+                } else if (item.author && item.text) {
+                  // YouTube Comment format
+                  allTweets.push({
+                    id: item.id || `yt_${allTweets.length + 1}`,
+                    full_text: item.text,
+                    created_at: item.published_time || '',
+                    username: item.author,
+                    user_name: item.author.replace('@', ''),
+                    likes: item.likes || 0,
+                    retweets: 0,
+                    replies: item.is_pinned ? 1 : 0,
+                    views: item.likes || '0',
+                    tweet_url: item.author_url || item.video_url || ''
+                  });
                 } else {
                   allTweets.push(...extractTweetsFromResponse(item));
                 }
@@ -823,15 +1053,6 @@
           // Transition to View 2
           viewSetup.classList.add('hidden');
           viewTable.classList.remove('hidden');
-
-          // Initialize Table View
-          initTableView();
-        } catch (err) {
-          showValidationError('Terjadi kesalahan saat memproses data: ' + err.message);
-          btnSubmit.disabled = false;
-          btnSubmit.innerHTML = '<span class="material-symbols-outlined text-base">table_view</span><span>Muat Data ke Tabel (Submit)</span><span class="font-code-inline text-xs ml-1 opacity-70">↵</span>';
-        }
-      });
 
           // Initialize Table View
           initTableView();

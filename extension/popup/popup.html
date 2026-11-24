@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Social Stream Scraper</title>
+  <link rel="stylesheet" href="popup.css"/>
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo-icon">⚡</div>
+        <div class="title-group">
+          <div class="title-row">
+            <h1>Social Scraper</h1>
+            <span class="badge-version">v1.2.0</span>
+          </div>
+          <p class="subtitle">Client-Side Payload &amp; DOM Harvester</p>
+        </div>
+      </div>
+      <div class="status-indicator">
+        <span class="status-dot" id="status-dot"></span>
+        <span class="status-text" id="status-text">OFF</span>
+      </div>
+    </header>
+
+    <!-- Social Media Grid Menu -->
+    <section class="section">
+      <div class="section-title-row">
+        <span class="section-label">PILIH PLATFORM TARGET</span>
+        <span class="section-sub" id="active-platform-name">X (Twitter)</span>
+      </div>
+
+      <div class="platform-grid" id="platform-grid">
+        <!-- 1. X (Twitter) -->
+        <div class="platform-card active" data-platform="twitter">
+          <div class="platform-icon"><img src="../icons/icons-x.png" alt="X Icon"></div>
+          <div class="platform-info">
+            <span class="platform-name">X / Twitter</span>
+            <span class="platform-status-badge badge-active">AKTIF</span>
+          </div>
+        </div>
+
+        <!-- 2. YouTube (Komentar) -->
+        <div class="platform-card" data-platform="youtube">
+          <div class="platform-icon"><img src="../icons/icons-youtube.png" alt="Youtube Icon"></div>
+          <div class="platform-info">
+            <span class="platform-name">YouTube</span>
+            <span class="platform-status-badge badge-active">AKTIF</span>
+          </div>
+        </div>
+
+        <!-- 3. Facebook -->
+        <div class="platform-card disabled" data-platform="facebook">
+          <div class="platform-icon"><img src="../icons/icons-facebook.png" alt="Facebook Icon"></div>
+          <div class="platform-info">
+            <span class="platform-name">Facebook</span>
+            <span class="platform-status-badge badge-soon">SOON</span>
+          </div>
+        </div>
+
+        <!-- 4. TikTok -->
+        <div class="platform-card disabled" data-platform="tiktok">
+          <div class="platform-icon"><img src="../icons/icons-tiktok.png" alt="Tiktok Icon"></div>
+          <div class="platform-info">
+            <span class="platform-name">TikTok</span>
+            <span class="platform-status-badge badge-soon">SOON</span>
+          </div>
+        </div>
+
+        <!-- 5. Reddit -->
+        <div class="platform-card disabled" data-platform="reddit">
+          <div class="platform-icon"><img src="../icons/icons-reddit.png" alt="Reddit Icon"></div>
+          <div class="platform-info">
+            <span class="platform-name">Reddit</span>
+            <span class="platform-status-badge badge-soon">SOON</span>
+          </div>
+        </div>
+
+        <!-- 6. Threads -->
+        <div class="platform-card disabled" data-platform="threads">
+          <div class="platform-icon"><img src="../icons/icons-threads.png" alt="Threads Icon"></div>
+          <div class="platform-info">
+            <span class="platform-name">Threads</span>
+            <span class="platform-status-badge badge-soon">SOON</span>
+          </div>
+        </div>
+
+        <!-- 7. Shopee -->
+        <div class="platform-card disabled" data-platform="shopee">
+          <div class="platform-icon"><img src="../icons/icons-shopee.png" alt="Shopee Icon"></div>
+          <div class="platform-info">
+            <span class="platform-name">Shopee</span>
+            <span class="platform-status-badge badge-soon">SOON</span>
+          </div>
+        </div>
+
+        <!-- 8. Tokopedia -->
+        <div class="platform-card disabled" data-platform="tokopedia">
+          <div class="platform-icon"><img src="../icons/icons-tokopedia.png" alt="Tokopedia Icon"></div>
+          <div class="platform-info">
+            <span class="platform-name">Tokopedia</span>
+            <span class="platform-status-badge badge-soon">SOON</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Realtime Monitor Card -->
+    <section class="monitor-card">
+      <div class="monitor-header">
+        <span class="monitor-label">MONITOR CAPTURE REAL-TIME</span>
+        <span class="monitor-target" id="page-detect-badge">Memeriksa tab...</span>
+      </div>
+      <div class="monitor-stats">
+        <div class="stat-box">
+          <span class="stat-number" id="count-responses">0</span>
+          <span class="stat-name" id="stat-name-1">Responses (XHR)</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-box">
+          <span class="stat-number" id="count-tweets">0</span>
+          <span class="stat-name" id="stat-name-2">Tweets Est.</span>
+        </div>
+      </div>
+      <p class="monitor-hint" id="monitor-hint">
+        Status: <b>OFF</b>. Klik <b>Mulai Capture</b> atau <b>Scan Halaman</b> tanpa perlu reload.
+      </p>
+    </section>
+
+    <!-- Action Controls -->
+    <section class="actions-group">
+      <!-- Button Scan Halaman Saat Ini (Mencegah Reload) -->
+      <button type="button" class="btn btn-scan" id="btn-scan-now">
+        <span class="btn-icon">🔍</span>
+        <span id="btn-scan-text">Scan Halaman Saat Ini (Tanpa Reload)</span>
+      </button>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" id="btn-toggle-capture">
+          <span class="btn-icon" id="btn-toggle-icon">▶</span>
+          <span id="btn-toggle-text">Mulai Capture</span>
+        </button>
+        <button type="button" class="btn btn-success" id="btn-save-json" disabled>
+          <span class="btn-icon">💾</span>
+          <span>Stop &amp; Simpan JSON</span>
+        </button>
+      </div>
+
+      <div class="btn-sub-row">
+        <button type="button" class="btn-sub" id="btn-clear-buffer">
+          <span>🗑 Reset Data Buffer</span>
+        </button>
+        <button type="button" class="btn-sub" id="btn-open-dashboard">
+          <span><a href="https://scraping-dataset-zeta.vercel.app/">📊 Buka Dashboard</a></span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

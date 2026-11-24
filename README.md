@@ -58,7 +58,7 @@ window.stopCapture = function() {
     
     XMLHttpRequest.prototype.send = function() {
         this.addEventListener('load', function() {
-            if (this._url && this._url.includes('SearchTimeline') && this.status === 200) {
+            if (this._url && this._url.includes('SearchByQueryRaw') && this.status === 200) {
                 try {
                     const data = JSON.parse(this.responseText);
                     responseCount++;

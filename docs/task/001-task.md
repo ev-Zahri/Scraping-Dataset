@@ -1,0 +1,3 @@
+1. Update default nilai scrapping itu off, user perlu click button "mulai capture"
+2. Scrapping belum jalan seperti pada console
+3. Untuk scrapping komentar YT di docs\sample-bone\yt-comment-bone.html dengan pattern contoh komentar "boong ya teman2, jangan percaya sm nih orang, ga ada bukti di berhasil niru channel itu, dashboard kykgt gampang di buat.", "Cara seperti ini emang bagus. Tapi rawan kena copyright dari footage yang di gunakan. Aku udah pernah nyoba. Jadi hati2 aja. Jangan sampe udah capek2 ngedit, taunya kena copyright" dsb

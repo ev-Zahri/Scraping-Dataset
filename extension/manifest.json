@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "Social Stream Scraper",
+  "version": "1.1.0",
+  "description": "Universal client-side scraper for Twitter/X and YouTube with real-time payload capture.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "downloads"
+  ],
+  "host_permissions": [
+    "*://*.twitter.com/*",
+    "*://*.x.com/*",
+    "*://*.youtube.com/*"
+  ],
+  "icons": {
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Social Stream Scraper",
+    "default_icon": {
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.twitter.com/*",
+        "*://*.x.com/*"
+      ],
+      "js": ["content/x_interceptor.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "*://*.twitter.com/*",
+        "*://*.x.com/*"
+      ],
+      "js": ["content/content_bridge.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://*.youtube.com/*"
+      ],
+      "js": ["content/yt_comment_scraper.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

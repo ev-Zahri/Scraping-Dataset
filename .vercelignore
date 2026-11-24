@@ -1,0 +1,12 @@
+# Vercel deployment ignore
+# Abaikan file Python di Vercel agar Vercel mendeteksi proyek sebagai Pure Static Web
+server.py
+Dockerfile
+requirements.txt
+*.py
+raw_json/
+extracted_json/
+extracted_json_lama/
+temp_tweets/
+venv/
+__pycache__/

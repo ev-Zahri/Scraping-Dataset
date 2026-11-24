@@ -1,0 +1,14 @@
+{
+  "name": "social-scraper-dataset",
+  "version": "1.0.0",
+  "description": "Obsidian Precision Scraping Dataset Pipeline and Dashboard",
+  "main": "index.html",
+  "scripts": {
+    "extract": "node engine/extract_bulk.js",
+    "combine": "node engine/combine_json.js",
+    "csv": "node engine/json_to_csv.js"
+  },
+  "keywords": ["twitter", "scraper", "dataset", "obsidian"],
+  "author": "",
+  "license": "MIT"
+}

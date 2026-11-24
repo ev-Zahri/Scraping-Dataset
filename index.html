@@ -8,6 +8,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Three.js for 3D WebGL Background -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
   <style>
     @layer base {
       html {
@@ -20,8 +24,10 @@
         padding: 0;
         background-color: #0d0e13;
         color: #e3e1e9;
+        overflow-x: hidden;
       }
     }
+
     /* Minimalist Dark Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
@@ -50,6 +56,16 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: kinetic-gradient 6s ease infinite;
+      text-shadow: 0 0 30px rgba(56, 189, 248, 0.25);
+    }
+
+    /* 3D Text Depth for "Need data?" */
+    .text-depth-3d {
+      text-shadow: 
+        0 1px 0 #1e1f25,
+        0 2px 0 #181920,
+        0 3px 0 #121318,
+        0 5px 15px rgba(0, 0, 0, 0.8);
     }
 
     /* Mouse scroll animation */
@@ -63,10 +79,61 @@
 
     /* Subtle background grid pattern */
     .bg-grid-pattern {
-      background-size: 32px 32px;
+      background-size: 36px 36px;
       background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+
+    /* CSS 3D Perspective & Tilt Classes */
+    .perspective-container {
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+
+    .tilt-card {
+      transition: transform 0.18s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Specular Glare Highlight on Cards */
+    .tilt-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(350px circle at var(--mouse-x, -50%) var(--mouse-y, -50%), rgba(56, 189, 248, 0.16), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .tilt-card:hover::before {
+      opacity: 1;
+    }
+
+    /* 3D Floating Token Animation */
+    @keyframes float-harmonic {
+      0%, 100% {
+        transform: translateY(0px) rotateX(0deg) rotateY(0deg) translateZ(30px);
+      }
+      50% {
+        transform: translateY(-10px) rotateX(6deg) rotateY(-6deg) translateZ(45px);
+      }
+    }
+    .floating-3d-token {
+      animation: float-harmonic 5s ease-in-out infinite;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    /* Parallax Layers */
+    .parallax-layer {
+      will-change: transform, opacity;
+      transform-style: preserve-3d;
     }
   </style>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -150,22 +217,51 @@
 <body class="bg-surface-container-lowest font-body-default text-body-default text-on-surface min-h-screen selection:bg-primary/30 selection:text-primary">
 
   <!-- ========================================================================= -->
-  <!-- HERO SECTION: "Need data? Scrape it." (Obsidian Precision Animated)      -->
+  <!-- HERO SECTION: 3D WEBGL + PARALLAX SCROLLING                               -->
   <!-- ========================================================================= -->
-  <header id="hero-section" class="relative w-full min-h-[92vh] flex flex-col justify-between items-center px-4 py-8 md:py-12 bg-grid-pattern border-b border-outline-variant/20 overflow-hidden">
-    <!-- Subtle Ambient Glow -->
-    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="absolute -bottom-32 left-1/4 w-[400px] h-[250px] bg-tertiary/10 rounded-full blur-[100px] pointer-events-none"></div>
+  <header id="hero-section" class="relative w-full min-h-screen flex flex-col justify-between items-center px-4 py-8 md:py-10 bg-grid-pattern border-b border-outline-variant/20 overflow-hidden perspective-container">
+    
+    <!-- Three.js 3D Interactive WebGL Canvas -->
+    <canvas id="webgl-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Subtle Ambient Glow Orbs -->
+    <div id="ambient-orb-1" class="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[380px] bg-primary/10 rounded-full blur-[140px] pointer-events-none z-0"></div>
+    <div id="ambient-orb-2" class="absolute -bottom-32 left-1/4 w-[450px] h-[280px] bg-tertiary/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <!-- Floating 3D Data Tokens (Parallax Depth Layer) -->
+    <div class="hidden lg:flex absolute top-28 left-8 xl:left-20 p-2.5 rounded-xl bg-surface-container/80 border border-outline-variant/40 backdrop-blur-md shadow-2xl floating-3d-token z-10 select-none pointer-events-none items-center gap-2.5 font-mono text-xs">
+      <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+      <span class="text-on-surface-variant">X.stream</span>
+      <span class="text-primary font-bold">18.2K tweets</span>
+    </div>
+
+    <div class="hidden lg:flex absolute top-36 right-8 xl:right-24 p-2.5 rounded-xl bg-surface-container/80 border border-outline-variant/40 backdrop-blur-md shadow-2xl floating-3d-token z-10 select-none pointer-events-none items-center gap-2.5 font-mono text-xs" style="animation-delay: -2s;">
+      <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+      <span class="text-on-surface-variant">YT.comments</span>
+      <span class="text-tertiary font-bold">5.4K parsed</span>
+    </div>
+
+    <div class="hidden lg:flex absolute bottom-28 left-10 xl:left-28 p-2.5 rounded-xl bg-surface-container/80 border border-outline-variant/40 backdrop-blur-md shadow-2xl floating-3d-token z-10 select-none pointer-events-none items-center gap-2.5 font-mono text-xs" style="animation-delay: -3.5s;">
+      <span class="material-symbols-outlined text-sm text-primary">data_thresholding</span>
+      <span class="text-on-surface-variant">Threads.net</span>
+      <span class="text-on-surface font-semibold">Feed Sync OK</span>
+    </div>
+
+    <div class="hidden lg:flex absolute bottom-32 right-10 xl:right-32 p-2.5 rounded-xl bg-surface-container/80 border border-outline-variant/40 backdrop-blur-md shadow-2xl floating-3d-token z-10 select-none pointer-events-none items-center gap-2.5 font-mono text-xs" style="animation-delay: -1.2s;">
+      <span class="material-symbols-outlined text-sm text-tertiary">verified</span>
+      <span class="text-on-surface-variant">Memory Sandbox</span>
+      <span class="text-tertiary font-bold">0% Cloud Leak</span>
+    </div>
 
     <!-- Top Navigation Bar -->
-    <nav class="relative z-10 w-full max-w-6xl flex items-center justify-between py-2 border-b border-outline-variant/20">
+    <nav class="relative z-20 w-full max-w-6xl flex items-center justify-between py-2 border-b border-outline-variant/20 backdrop-blur-sm">
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center border border-outline-variant/40 text-primary shadow-inner">
           <span class="material-symbols-outlined text-lg">dataset</span>
         </div>
         <div class="flex flex-col">
           <span class="font-display-lg text-sm font-bold tracking-tight text-on-surface">SCRAPING PIPELINE</span>
-          <span class="font-label-sm text-[10px] text-on-surface-variant tracking-wider uppercase">V3.0.0 // CLIENT-SIDE</span>
+          <span class="font-label-sm text-[10px] text-on-surface-variant tracking-wider uppercase">V3.0.0 // 3D KINETIC ENGINE</span>
         </div>
       </div>
 
@@ -181,29 +277,29 @@
       </div>
     </nav>
 
-    <!-- Center Hero Slogan & Subtitle -->
-    <div class="relative z-10 flex flex-col items-center justify-center text-center max-w-3xl my-auto px-4 py-8">
+    <!-- Center Hero Slogan & Subtitle (Parallax Content Layer) -->
+    <div id="hero-content" class="relative z-20 flex flex-col items-center justify-center text-center max-w-3xl my-auto px-4 py-6 parallax-layer">
       <!-- Badge Meta -->
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container/90 border border-outline-variant/40 mb-6 backdrop-blur shadow-sm">
+      <div id="hero-badge" class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-surface-container/90 border border-outline-variant/40 mb-6 backdrop-blur shadow-lg transition-transform">
         <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
         <span class="font-label-sm text-[11px] text-primary tracking-wider uppercase font-semibold">
           100% Client-Side Engine // No API Key Required
         </span>
       </div>
 
-      <!-- Main Animated Headline -->
-      <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight font-display-lg leading-[1.1] mb-5">
-        <span class="text-on-surface">Need data?</span><br/>
+      <!-- Main Animated 3D Headline -->
+      <h1 id="hero-slogan" class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight font-display-lg leading-[1.08] mb-5 select-none transition-transform">
+        <span class="text-on-surface text-depth-3d">Need data?</span><br/>
         <span class="animate-kinetic">Scrape it.</span>
       </h1>
 
       <!-- Subtitle Description -->
-      <p class="font-body-muted text-sm sm:text-base md:text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed mb-8">
+      <p id="hero-subtitle" class="font-body-muted text-sm sm:text-base md:text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed mb-8 transition-transform">
         Ekstraksi dataset sosial media langsung dari browser Anda tanpa token limit, tanpa server backend, dan zero cloud leak. Konversi tangkapan stream DOM Twitter/X, komentar YouTube, Threads, TikTok, dan ulasan Shopee menjadi CSV/JSON siap olah.
       </p>
 
       <!-- Action Buttons -->
-      <div class="flex flex-wrap items-center justify-center gap-3">
+      <div id="hero-buttons" class="flex flex-wrap items-center justify-center gap-3 transition-transform">
         <a href="#section-workspace" class="h-11 px-6 rounded-lg bg-primary-container hover:bg-primary text-surface-container-lowest font-body-strong text-sm font-semibold flex items-center gap-2 shadow-lg shadow-primary-container/20 transition-all hover:scale-[1.03] active:scale-[0.98]">
           <span class="material-symbols-outlined text-base">table_view</span>
           <span>Buka Workspace Parsing</span>
@@ -215,21 +311,21 @@
         </a>
       </div>
 
-      <!-- Feature Pill Stack -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-12 w-full max-w-2xl text-left">
-        <div class="p-3 bg-surface-container/60 border border-outline-variant/20 rounded-lg backdrop-blur flex flex-col">
+      <!-- Feature Pill Stack (Tilt Enabled) -->
+      <div id="hero-feature-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-12 w-full max-w-2xl text-left transition-transform">
+        <div class="tilt-card p-3 bg-surface-container/70 border border-outline-variant/30 rounded-lg backdrop-blur flex flex-col shadow-sm">
           <span class="font-label-sm text-[10px] text-on-surface-variant uppercase">Platform</span>
           <span class="font-body-strong text-xs text-on-surface mt-0.5">X, YT, Threads, TikTok</span>
         </div>
-        <div class="p-3 bg-surface-container/60 border border-outline-variant/20 rounded-lg backdrop-blur flex flex-col">
+        <div class="tilt-card p-3 bg-surface-container/70 border border-outline-variant/30 rounded-lg backdrop-blur flex flex-col shadow-sm">
           <span class="font-label-sm text-[10px] text-on-surface-variant uppercase">Runtime</span>
           <span class="font-body-strong text-xs text-tertiary mt-0.5">Pure In-Memory JS</span>
         </div>
-        <div class="p-3 bg-surface-container/60 border border-outline-variant/20 rounded-lg backdrop-blur flex flex-col">
+        <div class="tilt-card p-3 bg-surface-container/70 border border-outline-variant/30 rounded-lg backdrop-blur flex flex-col shadow-sm">
           <span class="font-label-sm text-[10px] text-on-surface-variant uppercase">Keamanan</span>
           <span class="font-body-strong text-xs text-primary mt-0.5">Zero Data Leakage</span>
         </div>
-        <div class="p-3 bg-surface-container/60 border border-outline-variant/20 rounded-lg backdrop-blur flex flex-col">
+        <div class="tilt-card p-3 bg-surface-container/70 border border-outline-variant/30 rounded-lg backdrop-blur flex flex-col shadow-sm">
           <span class="font-label-sm text-[10px] text-on-surface-variant uppercase">Output</span>
           <span class="font-body-strong text-xs text-on-surface mt-0.5">Clean CSV &amp; JSON</span>
         </div>
@@ -237,8 +333,8 @@
     </div>
 
     <!-- Scroll Down Indicator (Interactive & Animated) -->
-    <a href="#section-workspace" class="relative z-10 flex flex-col items-center gap-2 text-on-surface-variant/70 hover:text-primary transition-colors cursor-pointer group mt-4">
-      <div class="w-5 h-8 rounded-full border-2 border-outline-variant/60 group-hover:border-primary flex items-start justify-center p-1 transition-colors">
+    <a id="scroll-prompt" href="#section-workspace" class="relative z-20 flex flex-col items-center gap-2 text-on-surface-variant/70 hover:text-primary transition-all cursor-pointer group mt-2 pb-2">
+      <div class="w-5 h-8 rounded-full border-2 border-outline-variant/60 group-hover:border-primary flex items-start justify-center p-1 transition-colors shadow">
         <div class="w-1 h-2 rounded-full bg-primary animate-wheel"></div>
       </div>
       <div class="flex items-center gap-1 font-label-sm text-[11px] tracking-widest uppercase">
@@ -251,7 +347,7 @@
   <!-- ========================================================================= -->
   <!-- SECTION TUTORIAL: BROWSER EXTENSION QUICK GUIDE (EDGE / CHROME)          -->
   <!-- ========================================================================= -->
-  <section id="section-tutorial" class="w-full max-w-5xl mx-auto py-14 px-4 sm:px-6 flex flex-col gap-8 border-b border-outline-variant/20">
+  <section id="section-tutorial" class="w-full max-w-5xl mx-auto py-16 px-4 sm:px-6 flex flex-col gap-8 border-b border-outline-variant/20">
     <div class="flex flex-col gap-2">
       <div class="flex items-center gap-2">
         <span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container font-label-sm text-xs text-primary tracking-wider uppercase">
@@ -268,10 +364,10 @@
       </p>
     </div>
 
-    <!-- Step Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <!-- Step Grid (3D Tilt Cards) -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 perspective-container">
       <!-- Step 1 -->
-      <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-outline-variant transition-colors">
+      <div class="tilt-card p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-primary/50 transition-colors shadow-sm">
         <div class="flex items-center justify-between">
           <span class="font-label-sm text-xs text-primary font-bold">LANGKAH 01</span>
           <span class="material-symbols-outlined text-base text-primary">install_desktop</span>
@@ -283,7 +379,7 @@
       </div>
 
       <!-- Step 2 -->
-      <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-outline-variant transition-colors">
+      <div class="tilt-card p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-primary/50 transition-colors shadow-sm">
         <div class="flex items-center justify-between">
           <span class="font-label-sm text-xs text-outline font-bold">LANGKAH 02</span>
           <span class="material-symbols-outlined text-base text-outline">tab</span>
@@ -295,7 +391,7 @@
       </div>
 
       <!-- Step 3 -->
-      <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-outline-variant transition-colors">
+      <div class="tilt-card p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-primary/50 transition-colors shadow-sm">
         <div class="flex items-center justify-between">
           <span class="font-label-sm text-xs text-outline font-bold">LANGKAH 03</span>
           <span class="material-symbols-outlined text-base text-outline">radar</span>
@@ -307,7 +403,7 @@
       </div>
 
       <!-- Step 4 -->
-      <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-tertiary/60 transition-colors">
+      <div class="tilt-card p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-tertiary/60 transition-colors shadow-sm">
         <div class="flex items-center justify-between">
           <span class="font-label-sm text-xs text-tertiary font-bold">LANGKAH 04</span>
           <span class="material-symbols-outlined text-base text-tertiary">file_download</span>
@@ -352,16 +448,16 @@
       </header>
 
       <!-- ===================================================================== -->
-      <!-- PLATFORM SELECTOR TABS                                                -->
+      <!-- PLATFORM SELECTOR TABS (3D Tilt Cards)                                -->
       <!-- ===================================================================== -->
       <section class="flex flex-col gap-3">
         <label class="font-label-sm text-xs text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
           <span class="material-symbols-outlined text-sm text-primary">hub</span>
           Target Sosial Media:
         </label>
-        <div id="platform-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+        <div id="platform-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 perspective-container">
           <!-- X / Twitter -->
-          <button type="button" data-platform="twitter" class="platform-tab active group p-3 rounded-xl border border-primary bg-surface-container-high text-left flex flex-col justify-between gap-2 transition-all cursor-pointer shadow-sm">
+          <button type="button" data-platform="twitter" class="platform-tab tilt-card active group p-3 rounded-xl border border-primary bg-surface-container-high text-left flex flex-col justify-between gap-2 transition-all cursor-pointer shadow-sm">
             <div class="flex items-center justify-between">
               <span class="font-label-sm text-[11px] font-bold text-primary">X (TWITTER)</span>
               <span class="w-2 h-2 rounded-full bg-tertiary"></span>
@@ -371,7 +467,7 @@
           </button>
 
           <!-- YouTube Comments -->
-          <button type="button" data-platform="youtube" class="platform-tab group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
+          <button type="button" data-platform="youtube" class="platform-tab tilt-card group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
             <div class="flex items-center justify-between">
               <span class="font-label-sm text-[11px] font-bold text-on-surface-variant group-hover:text-primary transition-colors">YOUTUBE</span>
               <span class="w-2 h-2 rounded-full bg-tertiary"></span>
@@ -381,7 +477,7 @@
           </button>
 
           <!-- Threads -->
-          <button type="button" data-platform="threads" class="platform-tab group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
+          <button type="button" data-platform="threads" class="platform-tab tilt-card group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
             <div class="flex items-center justify-between">
               <span class="font-label-sm text-[11px] font-bold text-on-surface-variant group-hover:text-primary transition-colors">THREADS</span>
               <span class="w-2 h-2 rounded-full bg-tertiary"></span>
@@ -391,7 +487,7 @@
           </button>
 
           <!-- TikTok -->
-          <button type="button" data-platform="tiktok" class="platform-tab group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
+          <button type="button" data-platform="tiktok" class="platform-tab tilt-card group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
             <div class="flex items-center justify-between">
               <span class="font-label-sm text-[11px] font-bold text-on-surface-variant group-hover:text-primary transition-colors">TIKTOK</span>
               <span class="w-2 h-2 rounded-full bg-primary-container"></span>
@@ -401,7 +497,7 @@
           </button>
 
           <!-- Shopee -->
-          <button type="button" data-platform="shopee" class="platform-tab group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
+          <button type="button" data-platform="shopee" class="platform-tab tilt-card group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
             <div class="flex items-center justify-between">
               <span class="font-label-sm text-[11px] font-bold text-on-surface-variant group-hover:text-primary transition-colors">SHOPEE</span>
               <span class="w-2 h-2 rounded-full bg-primary-container"></span>
@@ -428,7 +524,7 @@
           </button>
         </div>
 
-        <div class="relative group border-2 border-dashed border-outline-variant hover:border-primary-container bg-surface-container-lowest/80 rounded-xl p-8 flex flex-col items-center justify-center gap-3 text-center transition-all cursor-pointer" id="dropzone">
+        <div class="relative group border-2 border-dashed border-outline-variant hover:border-primary-container bg-surface-container-lowest/80 rounded-xl p-8 flex flex-col items-center justify-center gap-3 text-center transition-all cursor-pointer shadow-sm" id="dropzone">
           <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-surface-container-lowest transition-colors">
             <span class="material-symbols-outlined text-xl">upload_file</span>
           </div>
@@ -447,7 +543,7 @@
               <span class="material-symbols-outlined text-sm">folder_open</span>
               Pilih File
             </button>
-            <button id="btn-load-sample" class="h-8 px-3.5 rounded bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 font-body-strong text-xs transition-colors flex items-center gap-1.5 cursor-pointer" type="button">
+            <button id="btn-load-sample" class="h-8 px-3.5 rounded bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 font-body-strong text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm" type="button">
               <span class="material-symbols-outlined text-sm">bolt</span>
               <span id="btn-sample-label">⚡ Muat Sampel (X Timeline)</span>
             </button>
@@ -461,7 +557,7 @@
       <!-- ===================================================================== -->
       <!-- SECTION 2: QUICK CONSOLE SNIPPET (FALLBACK SCRAPING)                  -->
       <!-- ===================================================================== -->
-      <section class="flex flex-col gap-3 bg-surface-container-low rounded-xl p-5 shadow-sm">
+      <section class="flex flex-col gap-3 bg-surface-container-low rounded-xl p-5 shadow-sm border border-outline-variant/30">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-lg">terminal</span>
@@ -839,7 +935,259 @@
       const tableBody = document.getElementById('table-body');
       const rowsPerPageSelect = document.getElementById('rows-per-page-select');
 
-      // Platform Tabs Event Listeners
+      // =========================================================================
+      // 1. THREE.JS 3D WEBGL HERO CANVAS
+      // =========================================================================
+      function initHero3D() {
+        const canvas = document.getElementById('webgl-canvas');
+        if (!canvas) return;
+
+        // Graceful check for Three.js
+        if (typeof THREE === 'undefined') {
+          console.warn('Three.js CDN unreachable. Running with high-performance CSS 3D fallback.');
+          return;
+        }
+
+        try {
+          const scene = new THREE.Scene();
+          const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+          camera.position.z = 45;
+
+          const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+          renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+          // Particle Field (Data Lattice)
+          const particleCount = 420;
+          const geometry = new THREE.BufferGeometry();
+          const positions = new Float32Array(particleCount * 3);
+          const colors = new Float32Array(particleCount * 3);
+
+          const colCyan = new THREE.Color(0x38bdf8);
+          const colEmerald = new THREE.Color(0x10b981);
+          const colSky = new THREE.Color(0x7bd0ff);
+
+          for (let i = 0; i < particleCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 130;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 90;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 70;
+
+            const c = (i % 3 === 0) ? colCyan : ((i % 3 === 1) ? colEmerald : colSky);
+            colors[i * 3] = c.r;
+            colors[i * 3 + 1] = c.g;
+            colors[i * 3 + 2] = c.b;
+          }
+
+          geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+          // Generate circular glowing point sprite
+          const pCanvas = document.createElement('canvas');
+          pCanvas.width = 32;
+          pCanvas.height = 32;
+          const pCtx = pCanvas.getContext('2d');
+          const pGrad = pCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+          pGrad.addColorStop(0, 'rgba(255,255,255,1)');
+          pGrad.addColorStop(0.35, 'rgba(56,189,248,0.7)');
+          pGrad.addColorStop(1, 'rgba(0,0,0,0)');
+          pCtx.fillStyle = pGrad;
+          pCtx.fillRect(0, 0, 32, 32);
+
+          const pTexture = new THREE.CanvasTexture(pCanvas);
+          const pMaterial = new THREE.PointsMaterial({
+            size: 2.2,
+            map: pTexture,
+            transparent: true,
+            vertexColors: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+          });
+
+          const particles = new THREE.Points(geometry, pMaterial);
+          scene.add(particles);
+
+          // Perspective Grid Plane (Cybernetic Data Highway)
+          const grid = new THREE.GridHelper(160, 32, 0x38bdf8, 0x1e293b);
+          grid.position.y = -24;
+          grid.rotation.x = 0.22;
+          grid.material.opacity = 0.22;
+          grid.material.transparent = true;
+          scene.add(grid);
+
+          // Floating Geometric Data Cubes (representing social stream chunks)
+          const cubes = [];
+          const cubeGeom = new THREE.BoxGeometry(3.2, 3.2, 3.2);
+          for (let i = 0; i < 5; i++) {
+            const cubeMat = new THREE.MeshBasicMaterial({
+              color: i % 2 === 0 ? 0x38bdf8 : 0x10b981,
+              wireframe: true,
+              transparent: true,
+              opacity: 0.35
+            });
+            const cube = new THREE.Mesh(cubeGeom, cubeMat);
+            cube.position.set((i - 2) * 26, (Math.random() - 0.5) * 18, (Math.random() - 0.5) * 22);
+            scene.add(cube);
+            cubes.push(cube);
+          }
+
+          let mouseX = 0, mouseY = 0;
+          let targetX = 0, targetY = 0;
+
+          window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.04;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.04;
+          }, { passive: true });
+
+          let scrollY = 0;
+          window.addEventListener('scroll', () => {
+            scrollY = window.scrollY;
+          }, { passive: true });
+
+          function renderLoop() {
+            requestAnimationFrame(renderLoop);
+
+            targetX += (mouseX - targetX) * 0.05;
+            targetY += (mouseY - targetY) * 0.05;
+
+            particles.rotation.y += 0.0008;
+            particles.rotation.x += 0.0004;
+            grid.rotation.z += 0.0006;
+
+            cubes.forEach((cube, idx) => {
+              cube.rotation.x += 0.008 * (idx % 2 === 0 ? 1 : -1);
+              cube.rotation.y += 0.01;
+              cube.position.y += Math.sin(Date.now() * 0.0012 + idx) * 0.015;
+            });
+
+            // Parallax 3D camera travel
+            camera.position.x = targetX * 0.6;
+            camera.position.y = -targetY * 0.6 - (scrollY * 0.035);
+            camera.position.z = 45 - (scrollY * 0.025);
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+          }
+          renderLoop();
+
+          window.addEventListener('resize', () => {
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+          });
+        } catch (e) {
+          console.warn('WebGL init fallback:', e);
+        }
+      }
+
+      // =========================================================================
+      // 2. PARALLAX SCROLLING ENGINE
+      // =========================================================================
+      function initParallaxScroll() {
+        const heroContent = document.getElementById('hero-content');
+        const heroSlogan = document.getElementById('hero-slogan');
+        const heroSubtitle = document.getElementById('hero-subtitle');
+        const heroButtons = document.getElementById('hero-buttons');
+        const heroFeatureGrid = document.getElementById('hero-feature-grid');
+        const scrollPrompt = document.getElementById('scroll-prompt');
+        const ambientOrb1 = document.getElementById('ambient-orb-1');
+        const ambientOrb2 = document.getElementById('ambient-orb-2');
+        const floatingTokens = document.querySelectorAll('.floating-3d-token');
+
+        let ticking = false;
+
+        function updateParallax() {
+          const sy = window.scrollY;
+          const heroH = window.innerHeight;
+
+          if (sy <= heroH * 1.3) {
+            // Optical Depth Layers (Multi-speed Parallax)
+            const fade = Math.max(0, 1 - sy / (heroH * 0.85));
+            
+            if (heroContent) {
+              heroContent.style.transform = `translate3d(0, ${sy * 0.22}px, 0)`;
+              heroContent.style.opacity = fade;
+            }
+
+            if (heroSlogan) {
+              heroSlogan.style.transform = `translate3d(0, ${sy * 0.08}px, 0) scale(${Math.max(0.85, 1 - sy * 0.0003)})`;
+            }
+
+            if (heroSubtitle) {
+              heroSubtitle.style.transform = `translate3d(0, ${sy * 0.14}px, 0)`;
+            }
+
+            if (heroButtons) {
+              heroButtons.style.transform = `translate3d(0, ${sy * 0.18}px, 0)`;
+            }
+
+            if (heroFeatureGrid) {
+              heroFeatureGrid.style.transform = `translate3d(0, ${sy * 0.26}px, 0)`;
+            }
+
+            if (scrollPrompt) {
+              scrollPrompt.style.opacity = Math.max(0, 1 - sy / 120);
+            }
+
+            if (ambientOrb1) {
+              ambientOrb1.style.transform = `translate3d(-50%, ${sy * 0.4}px, 0)`;
+            }
+            if (ambientOrb2) {
+              ambientOrb2.style.transform = `translate3d(0, ${-sy * 0.2}px, 0)`;
+            }
+
+            floatingTokens.forEach((token, idx) => {
+              const speed = 0.12 + (idx * 0.08);
+              token.style.transform = `translate3d(0, ${sy * speed}px, 0)`;
+              token.style.opacity = Math.max(0, 1 - sy / (heroH * 0.6));
+            });
+          }
+
+          ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            window.requestAnimationFrame(updateParallax);
+            ticking = true;
+          }
+        }, { passive: true });
+      }
+
+      // =========================================================================
+      // 3. INTERACTIVE CSS 3D TILT CARDS WITH SPECULAR GLARE
+      // =========================================================================
+      function initTiltCards() {
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+
+            const rotX = ((y - cy) / cy) * -9;
+            const rotY = ((x - cx) / cx) * 9;
+
+            card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(8px) scale3d(1.02, 1.02, 1.02)`;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+          });
+
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0) scale3d(1, 1, 1)';
+          });
+        });
+      }
+
+      // Initialize Visual 3D Engines
+      initHero3D();
+      initParallaxScroll();
+      initTiltCards();
+
+      // =========================================================================
+      // PLATFORM TABS CONTROLLER
+      // =========================================================================
       const platformButtons = document.querySelectorAll('.platform-tab');
       platformButtons.forEach(btn => {
         btn.addEventListener('click', () => {

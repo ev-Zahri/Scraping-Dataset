@@ -1,1 +1,3 @@
-1. span data-e2e="comment-level-2"
+1. Scraping data untuk tiktok di docs\sample-bone\tiktok-timeline.html. Perhatikan struktur html karena komentar bisa bercabang misalnya <span data-e2e="comment-level-1">, <span data-e2e="comment-level-2"> dst.
+2. Scraping data untuk shopee di docs\sample-bone\shopee-review.html. Contoh review "Kualitas headphonenya bagus! ! Saya sangat menyukai headset ini, tampilannya sangat mewah! Kontrol sentuhnya responsif dan kualitas suaranya bagus! ! Koneksi Bluetooth sangat stabil! ! menakjubkan! ! Saya akan merekomendasikan kepada teman saya untuk membeli! !", "Headphone sudah diterima, bassnya bagus sekali, cocok untuk yang suka mendengarkan musik dengan tenang di dalam ruangan, kualitasnya bagus banget, saya suka sekali, pokoknya saya rekomendasikan, terima kasih!"
+3. Selain itu buat kode javascript untuk "Salin Snippet" di console browser untuk setiap sosial medianya

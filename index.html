@@ -851,7 +851,7 @@
           sampleLabel: '⚡ Muat Sampel (X Timeline)',
           sampleFile: 'docs/sample-bone/timeline-search.html',
           fileType: 'html_twitter',
-          snippet: `let responseCount = 0; let allResponses = []; window.saveTwitterData = function() { if (allResponses.length === 0) return console.log('❌ Kosong'); const blob = new Blob([JSON.stringify(allResponses, null, 2)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'twitter_bulk_responses.json'; a.click(); }; window.stopCapture = function() { window.saveTwitterData(); console.log('🛑 Selesai: ' + responseCount); }; (function() { const origOpen = XMLHttpRequest.prototype.open; const origSend = XMLHttpRequest.prototype.send; XMLHttpRequest.prototype.open = function(m, u) { this._url = u; return origOpen.apply(this, arguments); }; XMLHttpRequest.prototype.send = function() { this.addEventListener('load', function() { if (this._url && this._url.includes('SearchTimeline') && this.status === 200) { try { allResponses.push(JSON.parse(this.responseText)); responseCount++; console.log('✅ Response #' + responseCount); } catch (e) {} } }); return origSend.apply(this, arguments); }; })(); console.log('🎯 Siap! Scroll feed lalu ketik stopCapture()');`
+          snippet: `(function(){let t=[],s=new Set(),r=true;const o=XMLHttpRequest.prototype.open,e=XMLHttpRequest.prototype.send;XMLHttpRequest.prototype.open=function(m,u){this._u=u;return o.apply(this,arguments)};XMLHttpRequest.prototype.send=function(){this.addEventListener('load',function(){if(this._u&&this._u.includes('SearchTimeline')&&this.status===200){try{const j=JSON.parse(this.responseText),ins=j?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions||[];for(const i of ins){for(const en of (i.entries||[])){const res=en?.content?.itemContent?.tweet_results?.result,leg=res?.legacy;if(leg&&!s.has(leg.id_str)){s.add(leg.id_str);const u=res?.core?.user_results?.result?.core?.screen_name||'';t.push({id:leg.id_str,full_text:leg.full_text||'',created_at:leg.created_at||'',username:'@'+u,user_name:res?.core?.user_results?.result?.core?.name||u,likes:leg.favorite_count||0,retweets:leg.retweet_count||0,replies:leg.reply_count||0,views:res?.views?.count||'0',tweet_url:'https://x.com/'+u+'/status/'+leg.id_str});console.log('[X Scraper] Collected:',s.size);}}}}catch(e){}}});return e.apply(this,arguments)};const tm=setInterval(()=>{if(r)window.scrollBy(0,800)},1200);window.stopCapture=function(){r=false;clearInterval(tm);if(!t.length)return console.warn('Belum ada tweet.');const b=new Blob([JSON.stringify(t,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='x_scraped_'+Date.now()+'.json';a.click();console.log('Selesai! Unduh:',t.length);};console.log('X Scraper Aktif! Scroll feed lalu ketik stopCapture()');})();`
         },
         youtube: {
           name: 'YouTube Comments',
@@ -860,7 +860,7 @@
           sampleLabel: '⚡ Muat Sampel (YouTube Comments)',
           sampleFile: 'docs/sample-bone/yt-comment-bone.html',
           fileType: 'html_youtube',
-          snippet: `console.log("Untuk YouTube, buka tab video, scroll komentar, lalu klik Scan Halaman di ekstensi atau simpan via Ctrl+S");`
+          snippet: `(function(){let c=[],s=new Set(),r=true;function scan(){document.querySelectorAll('ytd-comment-view-model').forEach(el=>{const tx=el.querySelector('#content-text'),au=el.querySelector('#author-text'),ti=el.querySelector('#published-time-text a'),lk=el.querySelector('#like-button');if(!tx)return;const t=tx.innerText.trim(),a=au?au.innerText.trim():'',hr=ti?ti.getAttribute('href'):'',id=(hr&&hr.includes('lc='))?hr.split('lc=')[1]:a+'_'+t.substring(0,15);if(!s.has(id)){s.add(id);let l=0;if(lk){const m=(lk.getAttribute('aria-label')||'').match(/([\\d.,KkMmbjt]+)/);if(m){let v=m[1].toLowerCase(),mu=v.includes('k')||v.includes('rb')?1e3:(v.includes('m')||v.includes('jt')?1e6:1);l=Math.round((parseFloat(v.replace(/[^\\d.,]/g,'').replace(',','.'))||0)*mu);}}c.push({id:id,full_text:t,created_at:ti?ti.innerText.trim():'',username:a,user_name:a.replace('@',''),likes:l,retweets:0,replies:0,views:l,tweet_url:hr?(hr.startsWith('http')?hr:'https://www.youtube.com'+hr):''});console.log('[YouTube] Collected:',s.size);}});}const tm=setInterval(()=>{if(!r)return;scan();window.scrollBy(0,800);},1400);window.stopCapture=function(){r=false;clearInterval(tm);scan();if(!c.length)return console.warn('Kosong');const b=new Blob([JSON.stringify(c,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='youtube_comments_'+Date.now()+'.json';a.click();console.log('Selesai! Unduh:',c.length);};console.log('YouTube Scraper Aktif! Ketik stopCapture() untuk simpan JSON.');})();`
         },
         threads: {
           name: 'Threads Feed',
@@ -869,7 +869,7 @@
           sampleLabel: '⚡ Muat Sampel (Threads Feed)',
           sampleFile: 'docs/sample-bone/threads-timeline.html',
           fileType: 'html_threads',
-          snippet: `console.log("Untuk Threads, buka feed threads.net, jalankan ekstensi, atau simpan halaman via Ctrl+S");`
+          snippet: `(function(){let p=[],s=new Set(),r=true;function scan(){document.querySelectorAll('a[href*="/post/"]').forEach(a=>{const m=a.getAttribute('href').match(/@([^\\/]+)\\/post\\/([a-zA-Z0-9_\\-]+)/);if(!m)return;const h=m[1],id=m[2];if(!s.has(id)){s.add(id);const c=a.closest('div[data-pressable-container="true"]')||a.closest('article')||a.parentElement.parentElement;let t='';if(c){const l=[];c.querySelectorAll('div[dir="auto"], span[dir="auto"]').forEach(x=>{const str=x.innerText.trim();if(str.length>2&&!l.includes(str)&&!str.match(/^\\d+\\s*(?:jam|hari|m|h|d)/i))l.push(str);});t=l.join('\\n\\n');}p.push({id:id,full_text:t||'Post by @'+h,created_at:new Date().toISOString(),username:'@'+h,user_name:h,likes:0,retweets:0,replies:0,views:0,tweet_url:'https://www.threads.net/@'+h+'/post/'+id});console.log('[Threads] Collected:',s.size);}});}const tm=setInterval(()=>{if(!r)return;scan();window.scrollBy(0,800);},1300);window.stopCapture=function(){r=false;clearInterval(tm);scan();if(!p.length)return console.warn('Kosong');const b=new Blob([JSON.stringify(p,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='threads_scraped_'+Date.now()+'.json';a.click();console.log('Selesai! Unduh:',p.length);};console.log('Threads Scraper Aktif! Ketik stopCapture() untuk simpan JSON.');})();`
         },
         tiktok: {
           name: 'TikTok Comments',
@@ -878,7 +878,7 @@
           sampleLabel: '⚡ Muat Sampel (TikTok Comments)',
           sampleFile: 'docs/sample-bone/tiktok-timeline.html',
           fileType: 'html_tiktok',
-          snippet: `console.log("Untuk TikTok, buka komentar video tiktok.com, lalu simpan file via Ctrl+S");`
+          snippet: `(function(){let c=[],s=new Set(),r=true;function scan(){document.querySelectorAll('[data-key-interaction="comment_view_replies"]').forEach(b=>{if(!b.getAttribute('data-scraped')){b.setAttribute('data-scraped','1');b.click();}});document.querySelectorAll('[class*="DivCommentItemWrapper"]').forEach((el,i)=>{const isL2=!!el.querySelector('[data-e2e="comment-level-2"]'),lvl=isL2?2:1;const uLink=el.querySelector('a[href*="/@"]'),h=uLink?'@'+uLink.getAttribute('href').replace(/^\\/@/,''):'';const tEl=el.querySelector('[data-e2e^="comment-level-"]');let tx=tEl?tEl.innerText.trim():'';if(!tx&&el.querySelector('[data-e2e="comment-sticker-reply"]'))tx='[Sticker / Media Reply]';if(!tx&&!h)return;const sub=el.querySelector('[class*="DivCommentSubContentWrapper"]'),ti=sub?sub.innerText.split('\\n')[0].trim():'';const lEl=el.querySelector('[data-key-interaction="comment_like"] span');let lk=0;if(lEl){const st=lEl.innerText.toLowerCase();let mu=st.includes('k')||st.includes('rb')?1e3:(st.includes('m')||st.includes('jt')?1e6:1);lk=Math.round((parseFloat(st.replace(/[^\\d.,]/g,'').replace(',','.'))||0)*mu);}const k=h+'_'+lvl+'_'+tx.substring(0,18);if(!s.has(k)){s.add(k);c.push({id:'tiktok_'+lvl+'_'+s.size,level:lvl,is_reply:lvl>1,full_text:tx,created_at:ti,username:h,user_name:h.replace('@',''),likes:lk,retweets:0,replies:lvl===1?1:0,views:lk,tweet_url:h?'https://www.tiktok.com/'+h:''});console.log('[TikTok] Collected (L'+lvl+'):',s.size);}});}const tm=setInterval(()=>{if(!r)return;scan();const cnt=document.querySelector('[class*="DivCommentListContainer"]')||window;cnt.scrollBy?cnt.scrollBy(0,800):window.scrollBy(0,800);},1400);window.stopCapture=function(){r=false;clearInterval(tm);scan();if(!c.length)return console.warn('Kosong');const b=new Blob([JSON.stringify(c,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='tiktok_comments_'+Date.now()+'.json';a.click();console.log('Selesai! Unduh:',c.length);};console.log('TikTok Scraper Aktif! Ketik stopCapture() untuk simpan JSON.');})();`
         },
         shopee: {
           name: 'Shopee Reviews',
@@ -887,7 +887,7 @@
           sampleLabel: '⚡ Muat Sampel (Shopee Reviews)',
           sampleFile: 'docs/sample-bone/shopee-review.html',
           fileType: 'html_shopee',
-          snippet: `console.log("Untuk Shopee, buka tab ulasan produk, simpan via Ctrl+S");`
+          snippet: `(function(){let r=[],s=new Set(),act=true;function scan(){document.querySelectorAll('.q2b7Oq, [data-cmtid]').forEach(el=>{const id=el.getAttribute('data-cmtid')||el.innerText.substring(0,15);if(s.has(id))return;s.add(id);const uEl=el.querySelector('.InK5kS'),u=uEl?uEl.innerText.trim():'';const tEl=el.querySelector('.YNedDV'),t=tEl?tEl.innerText.trim():'';const mEl=el.querySelector('.XYk98l');let dt='',vr='';if(mEl){const p=mEl.innerText.split('|');dt=p[0]?p[0].trim():'';vr=p[1]?p[1].replace(/Variasi:/i,'').trim():'';}const st=el.querySelectorAll('.icon-rating-solid').length||5;const lEl=el.querySelector('.shopee-product-rating__like-count');const lk=lEl?(parseInt(lEl.innerText.trim(),10)||0):0;r.push({id:id,full_text:t,created_at:dt,username:u,user_name:u,rating:st,variation:vr,likes:lk,retweets:0,replies:0,views:lk,tweet_url:window.location.href});console.log('[Shopee] Collected:',s.size);});}const tm=setInterval(()=>{if(!act)return;scan();const nxt=document.querySelector('.shopee-icon-button--right');if(nxt&&!nxt.disabled&&nxt.getAttribute('aria-disabled')!=='true'){nxt.click();console.log('Pindah halaman Shopee...');}else{window.scrollBy(0,600);}},2200);window.stopCapture=function(){act=false;clearInterval(tm);scan();if(!r.length)return console.warn('Kosong');const b=new Blob([JSON.stringify(r,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='shopee_reviews_'+Date.now()+'.json';a.click();console.log('Selesai! Unduh:',r.length);};console.log('Shopee Scraper Aktif! Ketik stopCapture() untuk simpan JSON.');})();`
         }
       };
 
@@ -1454,72 +1454,146 @@
         return posts;
       }
 
-      // TikTok Comments Parser
+      // TikTok Comments Parser (Supports Hierarchical Level 1 & Level 2 branching)
       function extractTikTokCommentsFromHtmlText(htmlContent) {
         const comments = [];
-        const blocks = htmlContent.split(/DivCommentItemWrapper/i);
-        for (let i = 1; i < blocks.length; i++) {
-          const b = blocks[i];
-          const uMatch = b.match(/href="\/@([^"]+)"/i);
-          const tMatch = b.match(/data-e2e="comment-level-\d"[^>]*>([\s\S]*?)<\/span>/i);
-          const lMatch = b.match(/aria-label="[^"]*?([\d.,KkMmbjt]+)\s*likes"/i) || b.match(/>([\d.,KkMmbjt]+)<\/span><\/div>/i);
-          const dateMatch = b.match(/TUXText[^>]*>(\d{1,2}-\d{1,2})<\/span>/i);
+        const seenIds = new Set();
+        const chunks = htmlContent.split(/(?=<div[^>]*class="[^"]*DivCommentItemWrapper)/i);
 
-          const username = uMatch ? `@${uMatch[1]}` : '';
-          const text = tMatch ? tMatch[1].replace(/<[^>]+>/g, '').trim() : '';
-          const likes = lMatch ? parseMetricNumber(lMatch[1]) : 0;
-          const createdAt = dateMatch ? dateMatch[1] : '';
+        for (let i = 1; i < chunks.length; i++) {
+          const chunk = chunks[i];
 
-          if (text || username) {
-            comments.push({
-              id: `tiktok_${i}_${Date.now()}`,
-              full_text: text,
-              created_at: createdAt,
-              username: username,
-              user_name: username.replace('@', ''),
-              likes: likes,
-              retweets: 0,
-              replies: 0,
-              views: 0,
-              tweet_url: username ? `https://www.tiktok.com/${username}` : ''
-            });
+          // Determine comment depth level (Level 1 vs Level 2 replies)
+          let level = 1;
+          if (chunk.includes('data-e2e="comment-level-2"') || chunk.includes('comment-username-2')) {
+            level = 2;
           }
+
+          const handleMatch = chunk.match(/href="\/@([^"?#\s]+)"/i);
+          const handle = handleMatch ? `@${handleMatch[1]}` : '';
+
+          const nameMatch = chunk.match(/data-e2e="comment-username-\d"[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>/i);
+          const userName = nameMatch ? nameMatch[1].replace(/<[^>]+>/g, '').trim() : (handle ? handle.replace('@', '') : '');
+
+          const textMatch = chunk.match(/data-e2e="comment-level-\d"[^>]*>([\s\S]*?)<\/span>/i);
+          let text = '';
+          if (textMatch) {
+            text = textMatch[1]
+              .replace(/<br\s*[\/]?>/gi, '\n')
+              .replace(/<[^>]+>/g, '')
+              .replace(/&amp;/g, '&')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&quot;/g, '"')
+              .replace(/&#39;/g, "'")
+              .trim();
+          }
+
+          if (!text && chunk.includes('data-e2e="comment-sticker-reply"')) {
+            text = '[Sticker / Media Reply]';
+          }
+
+          if (!text && !handle) continue;
+
+          const dateMatch = chunk.match(/class="[^"]*DivCommentSubContentWrapper[^"]*"[\s\S]*?<span[^>]*>([\s\S]*?)<\/span>/i);
+          let timestamp = dateMatch ? dateMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+
+          let likes = 0;
+          const spanMatch = chunk.match(/<span[^>]*class="[^"]*TUXText[^"]*"[^>]*>([\d.,KkMmbjt]+)<\/span><\/div>/i);
+          const ariaMatch = chunk.match(/aria-label="[^"]*?\n([\d.,KkMmbjt]+)\s*(?:likes|suka)?/i) || 
+                            chunk.match(/([\d.,KkMmbjt]+)\s*(?:likes|suka)/i);
+          if (spanMatch) {
+            likes = parseMetricNumber(spanMatch[1]);
+          } else if (ariaMatch) {
+            likes = parseMetricNumber(ariaMatch[1]);
+          }
+
+          const commentId = `tiktok_c${level}_${handle.replace('@', '')}_${i}`.replace(/[\s\W]/g, '_');
+          if (seenIds.has(commentId)) continue;
+          seenIds.add(commentId);
+
+          comments.push({
+            id: commentId,
+            level: level,
+            is_reply: level > 1,
+            full_text: text,
+            created_at: timestamp,
+            username: handle,
+            user_name: userName,
+            likes: likes,
+            retweets: 0,
+            replies: level === 1 ? 1 : 0,
+            views: likes,
+            tweet_url: handle ? `https://www.tiktok.com/${handle}` : ''
+          });
         }
         return comments;
       }
 
-      // Shopee Reviews Parser
+      // Shopee Reviews Parser (Extracts full content, star rating, variant & helpful count)
       function extractShopeeReviewsFromHtmlText(htmlContent) {
         const reviews = [];
-        const blocks = htmlContent.split(/class="q2b7Oq"/i);
-        for (let i = 1; i < blocks.length; i++) {
-          const b = blocks[i];
-          const uMatch = b.match(/class="InK5kS">([^<]+)<\/div>/i) || b.match(/class="InK5kS"[^>]*>([^<]+)<\/a>/i);
-          const tMatch = b.match(/class="YNedDV">([\s\S]*?)<\/div>/i);
-          const dMatch = b.match(/class="XYk98l">([^<]+)<\/div>/i);
-          const lMatch = b.match(/class="shopee-product-rating__like-count">(\d+)<\/div>/i);
-          const cmtIdMatch = b.match(/data-cmtid="(\d+)"/i);
+        const seenIds = new Set();
+        const chunks = htmlContent.split(/(?=<div[^>]*class="q2b7Oq")/i);
 
-          const username = uMatch ? uMatch[1].trim() : '';
-          const text = tMatch ? tMatch[1].replace(/<[^>]+>/g, '').trim() : '';
-          const variantDate = dMatch ? dMatch[1].trim() : '';
-          const likes = lMatch ? parseInt(lMatch[1], 10) : 0;
-          const reviewId = cmtIdMatch ? cmtIdMatch[1] : `shopee_${i}`;
+        for (let i = 1; i < chunks.length; i++) {
+          const chunk = chunks[i];
 
-          if (text || username) {
-            reviews.push({
-              id: reviewId,
-              full_text: text,
-              created_at: variantDate,
-              username: username,
-              user_name: username,
-              likes: likes,
-              retweets: 0,
-              replies: 0,
-              views: 0,
-              tweet_url: ''
-            });
+          const idMatch = chunk.match(/data-cmtid="(\d+)"/i);
+          const commentId = idMatch ? idMatch[1] : `shopee_rev_${i}`;
+
+          const userMatch = chunk.match(/class="InK5kS"[^>]*>([\s\S]*?)<\/(?:div|a)>/i);
+          const username = userMatch ? userMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+
+          const starsMatch = chunk.match(/class="shopee-svg-icon YBGCRA icon-rating-solid"/gi);
+          const rating = starsMatch ? starsMatch.length : 5;
+
+          const metaMatch = chunk.match(/class="XYk98l"[^>]*>([\s\S]*?)<\/div>/i);
+          let reviewDate = '';
+          let variation = '';
+          if (metaMatch) {
+            const rawMeta = metaMatch[1].replace(/<[^>]+>/g, '').trim();
+            const parts = rawMeta.split('|');
+            reviewDate = parts[0] ? parts[0].trim() : '';
+            variation = parts[1] ? parts[1].replace(/Variasi:/i, '').trim() : '';
           }
+
+          const textMatch = chunk.match(/class="YNedDV"[^>]*>([\s\S]*?)<\/div>/i);
+          let reviewText = '';
+          if (textMatch) {
+            reviewText = textMatch[1]
+              .replace(/<br\s*[\/]?>/gi, '\n')
+              .replace(/<[^>]+>/g, '')
+              .replace(/&amp;/g, '&')
+              .replace(/&lt;/g, '<')
+              .replace(/&gt;/g, '>')
+              .replace(/&quot;/g, '"')
+              .replace(/&#39;/g, "'")
+              .trim();
+          }
+
+          if (!reviewText && !username) continue;
+
+          const likeMatch = chunk.match(/class="shopee-product-rating__like-count"[^>]*>(\d+)<\/div>/i);
+          const likes = likeMatch ? parseInt(likeMatch[1], 10) : 0;
+
+          if (seenIds.has(commentId)) continue;
+          seenIds.add(commentId);
+
+          reviews.push({
+            id: commentId,
+            full_text: reviewText,
+            created_at: reviewDate,
+            username: username,
+            user_name: username,
+            rating: rating,
+            variation: variation,
+            likes: likes,
+            retweets: 0,
+            replies: 0,
+            views: likes,
+            tweet_url: ''
+          });
         }
         return reviews;
       }
@@ -1786,6 +1860,17 @@
             fallbackData = [
               { id: 'yt_1', full_text: 'Penjelasan metopen scraping ini sangat jelas dan aplikatif!', created_at: '2 hari lalu', username: '@mahasiswa_it', user_name: 'Mahasiswa IT', likes: 85, retweets: 0, replies: 2, views: 85, tweet_url: '' },
               { id: 'yt_2', full_text: 'Apakah dataset ini bisa diexport ke CSV langsung? Keren!', created_at: '1 hari lalu', username: '@skripsian', user_name: 'Skripsian', likes: 42, retweets: 0, replies: 1, views: 42, tweet_url: '' }
+            ];
+          } else if (activePlatform === 'tiktok') {
+            fallbackData = [
+              { id: 'tiktok_c1_evitadianaaa_1', level: 1, is_reply: false, full_text: 'benci bgt diginiin', created_at: '10-16', username: '@evitadianaaa', user_name: '🕊️', likes: 430000, retweets: 0, replies: 1, views: 430000, tweet_url: 'https://www.tiktok.com/@evitadianaaa' },
+              { id: 'tiktok_c2_xen7671_3', level: 2, is_reply: true, full_text: 'hihuuuu', created_at: '10-18', username: '@xen7671', user_name: 'AL🗿', likes: 1903, retweets: 0, replies: 0, views: 1903, tweet_url: 'https://www.tiktok.com/@xen7671' },
+              { id: 'tiktok_c1_inialyaa28__2', level: 1, is_reply: false, full_text: 'Lucu tapi klo gua di gituin ga trima', created_at: '10-18', username: '@inialyaa28_', user_name: 'aku?', likes: 125500, retweets: 0, replies: 1, views: 125500, tweet_url: 'https://www.tiktok.com/@inialyaa28_' }
+            ];
+          } else if (activePlatform === 'shopee') {
+            fallbackData = [
+              { id: '15323556277', full_text: 'Kualitas headphonenya bagus! ! Saya sangat menyukai headset ini, tampilannya sangat mewah! Kontrol sentuhnya responsif dan kualitas suaranya bagus! ! Koneksi Bluetooth sangat stabil! ! menakjubkan! ! Saya akan merekomendasikan kepada teman saya untuk membeli! !', created_at: '2024-05-28 09:18', username: 'i*****h', user_name: 'i*****h', rating: 5, variation: 'Pro 4-Putih', likes: 640, retweets: 0, replies: 0, views: 640, tweet_url: '' },
+              { id: '15347704683', full_text: 'Headphone sudah diterima, bassnya bagus sekali, cocok untuk yang suka mendengarkan musik dengan tenang di dalam ruangan, kualitasnya bagus banget, saya suka sekali, pokoknya saya rekomendasikan, terima kasih!', created_at: '2024-05-30 15:13', username: 'f*****k', user_name: 'f*****k', rating: 5, variation: 'Pro 4-Putih', likes: 463, retweets: 0, replies: 0, views: 463, tweet_url: '' }
             ];
           } else {
             fallbackData = [

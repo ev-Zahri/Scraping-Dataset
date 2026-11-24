@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let responsesBuffer = [];
   let ytCommentsBuffer = [];
   let threadsBuffer = [];
+  let tiktokBuffer = [];
+  let shopeeBuffer = [];
   let activeTabId = null;
   let activeTabUrl = '';
 
@@ -54,10 +56,20 @@ document.addEventListener('DOMContentLoaded', () => {
       pageDetectBadge.textContent = 'threads.net';
       pageDetectBadge.style.color = '#10b981';
       monitorHint.textContent = 'Tab Threads terdeteksi. Klik Scan untuk mengambil postingan terlihat, atau Mulai Capture saat scrolling.';
+    } else if (activeTabUrl.includes('tiktok.com')) {
+      selectPlatform('tiktok');
+      pageDetectBadge.textContent = 'tiktok.com';
+      pageDetectBadge.style.color = '#10b981';
+      monitorHint.textContent = 'Tab TikTok terdeteksi. Buka komentar video lalu klik Scan atau Mulai Capture saat scrolling.';
+    } else if (activeTabUrl.includes('shopee.co.id') || activeTabUrl.includes('shopee.com')) {
+      selectPlatform('shopee');
+      pageDetectBadge.textContent = 'shopee.co.id';
+      pageDetectBadge.style.color = '#10b981';
+      monitorHint.textContent = 'Tab Shopee terdeteksi. Buka ulasan produk lalu klik Scan atau Mulai Capture.';
     } else {
       pageDetectBadge.textContent = 'Tab Luar Target';
       pageDetectBadge.style.color = '#64748b';
-      monitorHint.textContent = 'Buka x.com, youtube.com, atau threads.net untuk memulai ekstraksi data.';
+      monitorHint.textContent = 'Buka target (X, YouTube, Threads, TikTok, Shopee) untuk memulai ekstraksi data.';
     }
 
     syncState();
@@ -85,6 +97,14 @@ document.addEventListener('DOMContentLoaded', () => {
       activePlatformName.textContent = 'Threads';
       statName1.textContent = 'Postingan';
       statName2.textContent = 'Akun Unik';
+    } else if (platform === 'tiktok') {
+      activePlatformName.textContent = 'TikTok';
+      statName1.textContent = 'Komentar';
+      statName2.textContent = 'Akun Unik';
+    } else if (platform === 'shopee') {
+      activePlatformName.textContent = 'Shopee';
+      statName1.textContent = 'Ulasan';
+      statName2.textContent = 'Rating Rata²';
     }
 
     chrome.storage.local.set({ activePlatform: platform });
@@ -92,11 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function syncState() {
-    chrome.storage.local.get(['isCapturing', 'capturedResponses', 'capturedYTComments', 'capturedThreadsPosts', 'activePlatform'], (res) => {
+    chrome.storage.local.get(['isCapturing', 'capturedResponses', 'capturedYTComments', 'capturedThreadsPosts', 'capturedTikTokComments', 'capturedShopeeReviews', 'activePlatform'], (res) => {
       isCapturing = res.isCapturing === true;
       responsesBuffer = res.capturedResponses || [];
       ytCommentsBuffer = res.capturedYTComments || [];
       threadsBuffer = res.capturedThreadsPosts || [];
+      tiktokBuffer = res.capturedTikTokComments || [];
+      shopeeBuffer = res.capturedShopeeReviews || [];
 
       if (res.activePlatform) {
         currentPlatform = res.activePlatform;
@@ -145,6 +167,22 @@ document.addEventListener('DOMContentLoaded', () => {
       countResponses.textContent = count;
       const uniqueUsers = new Set(threadsBuffer.map(p => p.username)).size;
       countTweets.textContent = uniqueUsers.toLocaleString();
+      btnSaveJson.disabled = count === 0;
+    } else if (currentPlatform === 'tiktok') {
+      const count = tiktokBuffer.length;
+      countResponses.textContent = count;
+      const uniqueUsers = new Set(tiktokBuffer.map(c => c.username)).size;
+      countTweets.textContent = uniqueUsers.toLocaleString();
+      btnSaveJson.disabled = count === 0;
+    } else if (currentPlatform === 'shopee') {
+      const count = shopeeBuffer.length;
+      countResponses.textContent = count;
+      let avgRating = '5.0 ★';
+      if (count > 0) {
+        const totalStars = shopeeBuffer.reduce((sum, r) => sum + (Number(r.rating) || 5), 0);
+        avgRating = (totalStars / count).toFixed(1) + ' ★';
+      }
+      countTweets.textContent = avgRating;
       btnSaveJson.disabled = count === 0;
     }
   }
@@ -234,6 +272,54 @@ document.addEventListener('DOMContentLoaded', () => {
           btnScanText.textContent = addedCount > 0 ? `+${addedCount} post Threads baru` : `Semua (${threadsBuffer.length}) telah terambil`;
         } else {
           btnScanText.textContent = 'Tidak menemukan postingan. Buka threads.net!';
+        }
+      } else if (currentPlatform === 'tiktok') {
+        const results = await chrome.scripting.executeScript({
+          target: { tabId: activeTabId },
+          func: extractTikTokCommentsDirect
+        });
+
+        const data = results?.[0]?.result;
+        if (data && Array.isArray(data.comments)) {
+          let addedCount = 0;
+          const existingIds = new Set(tiktokBuffer.map(c => c.id));
+          data.comments.forEach(c => {
+            if (!existingIds.has(c.id)) {
+              existingIds.add(c.id);
+              tiktokBuffer.push(c);
+              addedCount++;
+            }
+          });
+
+          await chrome.storage.local.set({ capturedTikTokComments: tiktokBuffer });
+          updateUI();
+          btnScanText.textContent = addedCount > 0 ? `+${addedCount} komentar TikTok baru` : `Semua (${tiktokBuffer.length}) telah terambil`;
+        } else {
+          btnScanText.textContent = 'Komentar belum tampak. Buka komentar!';
+        }
+      } else if (currentPlatform === 'shopee') {
+        const results = await chrome.scripting.executeScript({
+          target: { tabId: activeTabId },
+          func: extractShopeeReviewsDirect
+        });
+
+        const data = results?.[0]?.result;
+        if (data && Array.isArray(data.reviews)) {
+          let addedCount = 0;
+          const existingIds = new Set(shopeeBuffer.map(r => r.id));
+          data.reviews.forEach(r => {
+            if (!existingIds.has(r.id)) {
+              existingIds.add(r.id);
+              shopeeBuffer.push(r);
+              addedCount++;
+            }
+          });
+
+          await chrome.storage.local.set({ capturedShopeeReviews: shopeeBuffer });
+          updateUI();
+          btnScanText.textContent = addedCount > 0 ? `+${addedCount} ulasan Shopee baru` : `Semua (${shopeeBuffer.length}) telah terambil`;
+        } else {
+          btnScanText.textContent = 'Ulasan belum tampak. Buka ulasan produk!';
         }
       }
     } catch (err) {
@@ -358,6 +444,108 @@ document.addEventListener('DOMContentLoaded', () => {
     return { posts: results };
   }
 
+  function extractTikTokCommentsDirect() {
+    const results = [];
+    const items = document.querySelectorAll('[class*="DivCommentItemWrapper"]');
+    items.forEach((item) => {
+      try {
+        const isLevel2 = !!item.querySelector('[data-e2e="comment-level-2"]') || !!item.querySelector('[data-e2e="comment-username-2"]');
+        const level = isLevel2 ? 2 : 1;
+
+        const userLink = item.querySelector('a[href*="/@"]');
+        const handle = userLink ? `@${userLink.getAttribute('href').replace(/^\/@/, '').split('?')[0]}` : '';
+
+        const userEl = item.querySelector('[data-e2e^="comment-username"]');
+        const userName = userEl ? userEl.innerText.trim() : (handle ? handle.replace('@', '') : '');
+
+        const textEl = item.querySelector('[data-e2e^="comment-level-"]');
+        let text = textEl ? textEl.innerText.trim() : '';
+        if (!text && item.querySelector('[data-e2e="comment-sticker-reply"]')) {
+          text = '[Sticker / Media Reply]';
+        }
+        if (!text && !handle) return;
+
+        const subContent = item.querySelector('[class*="DivCommentSubContentWrapper"]');
+        const time = subContent ? subContent.innerText.split('\n')[0].trim() : '';
+
+        const likeEl = item.querySelector('[data-key-interaction="comment_like"]');
+        let likes = 0;
+        if (likeEl) {
+          const span = likeEl.querySelector('span');
+          const str = (span?.innerText || '').toLowerCase().trim();
+          let mult = 1;
+          if (str.includes('k') || str.includes('rb')) mult = 1000;
+          else if (str.includes('m') || str.includes('jt')) mult = 1000000;
+          const num = str.replace(/[^\d.,]/g, '').replace(/,/g, '.');
+          likes = Math.round((parseFloat(num) || 0) * mult);
+        }
+
+        const commentId = `tiktok_c${level}_${handle.replace('@', '')}_${text.substring(0, 16)}`.replace(/[\s\W]/g, '_');
+        results.push({
+          id: commentId,
+          level: level,
+          is_reply: level > 1,
+          full_text: text,
+          created_at: time,
+          username: handle,
+          user_name: userName,
+          likes: likes,
+          retweets: 0,
+          replies: level === 1 ? 1 : 0,
+          views: likes,
+          tweet_url: handle ? `https://www.tiktok.com/${handle}` : window.location.href
+        });
+      } catch (e) {}
+    });
+    return { comments: results };
+  }
+
+  function extractShopeeReviewsDirect() {
+    const results = [];
+    const items = document.querySelectorAll('.q2b7Oq, [data-cmtid]');
+    items.forEach((el, idx) => {
+      try {
+        const cmtId = el.getAttribute('data-cmtid') || `shopee_rev_${idx + 1}_${Date.now()}`;
+        const userEl = el.querySelector('.InK5kS');
+        const username = userEl ? userEl.innerText.trim() : '';
+
+        const textEl = el.querySelector('.YNedDV');
+        const text = textEl ? textEl.innerText.trim() : '';
+
+        const metaEl = el.querySelector('.XYk98l');
+        let reviewDate = '';
+        let variation = '';
+        if (metaEl) {
+          const parts = metaEl.innerText.split('|');
+          reviewDate = parts[0] ? parts[0].trim() : '';
+          variation = parts[1] ? parts[1].replace(/Variasi:/i, '').trim() : '';
+        }
+
+        const stars = el.querySelectorAll('.icon-rating-solid, .icon-rating-solid--active').length || 5;
+        const likeEl = el.querySelector('.shopee-product-rating__like-count');
+        const likes = likeEl ? (parseInt(likeEl.innerText.trim(), 10) || 0) : 0;
+
+        if (!text && !username) return;
+
+        results.push({
+          id: cmtId,
+          full_text: text,
+          created_at: reviewDate,
+          username: username,
+          user_name: username,
+          rating: stars,
+          variation: variation,
+          likes: likes,
+          retweets: 0,
+          replies: 0,
+          views: likes,
+          tweet_url: window.location.href
+        });
+      } catch (e) {}
+    });
+    return { reviews: results };
+  }
+
   // ==========================================
   // Toggle Capture (Start / Stop)
   // ==========================================
@@ -408,6 +596,30 @@ document.addEventListener('DOMContentLoaded', () => {
           }).catch(() => {});
         }
       });
+    } else if (currentPlatform === 'tiktok') {
+      const action = isCapturing ? 'START_TIKTOK_CAPTURE' : 'STOP_TIKTOK_CAPTURE';
+      chrome.tabs.sendMessage(activeTabId, { action: action }, () => {
+        if (chrome.runtime.lastError) {
+          chrome.scripting.executeScript({
+            target: { tabId: activeTabId },
+            files: ['content/tiktok_scraper.js']
+          }).then(() => {
+            chrome.tabs.sendMessage(activeTabId, { action: action });
+          }).catch(() => {});
+        }
+      });
+    } else if (currentPlatform === 'shopee') {
+      const action = isCapturing ? 'START_SHOPEE_CAPTURE' : 'STOP_SHOPEE_CAPTURE';
+      chrome.tabs.sendMessage(activeTabId, { action: action }, () => {
+        if (chrome.runtime.lastError) {
+          chrome.scripting.executeScript({
+            target: { tabId: activeTabId },
+            files: ['content/shopee_scraper.js']
+          }).then(() => {
+            chrome.tabs.sendMessage(activeTabId, { action: action });
+          }).catch(() => {});
+        }
+      });
     }
   });
 
@@ -424,6 +636,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentPlatform === 'twitter') chrome.tabs.sendMessage(activeTabId, { action: 'STOP_CAPTURE' });
       else if (currentPlatform === 'youtube') chrome.tabs.sendMessage(activeTabId, { action: 'STOP_YT_CAPTURE' });
       else if (currentPlatform === 'threads') chrome.tabs.sendMessage(activeTabId, { action: 'STOP_THREADS_CAPTURE' });
+      else if (currentPlatform === 'tiktok') chrome.tabs.sendMessage(activeTabId, { action: 'STOP_TIKTOK_CAPTURE' });
+      else if (currentPlatform === 'shopee') chrome.tabs.sendMessage(activeTabId, { action: 'STOP_SHOPEE_CAPTURE' });
     }
 
     if (currentPlatform === 'twitter') {
@@ -436,6 +650,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (currentPlatform === 'threads') {
       if (threadsBuffer.length === 0) return;
       downloadJson(threadsBuffer, `threads_posts_${threadsBuffer.length}_records.json`);
+    } else if (currentPlatform === 'tiktok') {
+      if (tiktokBuffer.length === 0) return;
+      downloadJson(tiktokBuffer, `tiktok_comments_${tiktokBuffer.length}_records.json`);
+    } else if (currentPlatform === 'shopee') {
+      if (shopeeBuffer.length === 0) return;
+      downloadJson(shopeeBuffer, `shopee_reviews_${shopeeBuffer.length}_records.json`);
     }
   });
 
@@ -469,6 +689,14 @@ document.addEventListener('DOMContentLoaded', () => {
         threadsBuffer = [];
         chrome.storage.local.set({ capturedThreadsPosts: [] });
         if (activeTabId) chrome.tabs.sendMessage(activeTabId, { action: 'RESET_THREADS_CAPTURE' });
+      } else if (currentPlatform === 'tiktok') {
+        tiktokBuffer = [];
+        chrome.storage.local.set({ capturedTikTokComments: [] });
+        if (activeTabId) chrome.tabs.sendMessage(activeTabId, { action: 'RESET_TIKTOK_CAPTURE' });
+      } else if (currentPlatform === 'shopee') {
+        shopeeBuffer = [];
+        chrome.storage.local.set({ capturedShopeeReviews: [] });
+        if (activeTabId) chrome.tabs.sendMessage(activeTabId, { action: 'RESET_SHOPEE_CAPTURE' });
       }
       updateUI();
     }
@@ -480,7 +708,7 @@ document.addEventListener('DOMContentLoaded', () => {
   platformCards.forEach(card => {
     card.addEventListener('click', () => {
       const platform = card.getAttribute('data-platform');
-      if (platform !== 'twitter' && platform !== 'youtube' && platform !== 'threads') {
+      if (platform !== 'twitter' && platform !== 'youtube' && platform !== 'threads' && platform !== 'tiktok' && platform !== 'shopee') {
         alert(`Platform ${platform.toUpperCase()} sedang dalam antrean pengembangan.`);
         return;
       }
@@ -503,6 +731,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (changes.capturedResponses !== undefined) responsesBuffer = changes.capturedResponses.newValue || [];
       if (changes.capturedYTComments !== undefined) ytCommentsBuffer = changes.capturedYTComments.newValue || [];
       if (changes.capturedThreadsPosts !== undefined) threadsBuffer = changes.capturedThreadsPosts.newValue || [];
+      if (changes.capturedTikTokComments !== undefined) tiktokBuffer = changes.capturedTikTokComments.newValue || [];
+      if (changes.capturedShopeeReviews !== undefined) shopeeBuffer = changes.capturedShopeeReviews.newValue || [];
       updateUI();
     }
   });

@@ -13,7 +13,10 @@
     "*://*.twitter.com/*",
     "*://*.x.com/*",
     "*://*.youtube.com/*",
-    "*://*.threads.net/*"
+    "*://*.threads.net/*",
+    "*://*.tiktok.com/*",
+    "*://*.shopee.co.id/*",
+    "*://*.shopee.com/*"
   ],
   "icons": {
     "128": "icons/icon128.png"
@@ -55,6 +58,21 @@
         "*://*.threads.net/*"
       ],
       "js": ["content/threads_scraper.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "*://*.tiktok.com/*"
+      ],
+      "js": ["content/tiktok_scraper.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "*://*.shopee.co.id/*",
+        "*://*.shopee.com/*"
+      ],
+      "js": ["content/shopee_scraper.js"],
       "run_at": "document_idle"
     }
   ]

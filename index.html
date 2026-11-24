@@ -155,7 +155,7 @@
               Tarik berkas <span class="font-code-inline text-primary">.json</span> atau <span class="font-code-inline text-primary">.html</span> hasil scraping ke sini
             </p>
             <p class="font-body-muted text-xs text-on-surface-variant">
-              Mendukung HTML DOM Twitter (timeline-search.html), JSON SearchTimeline, dan Komentar YouTube (Maksimal 50MB)
+              Mendukung HTML Twitter, Threads (threads-timeline.html), YouTube, dan JSON SearchTimeline (Maksimal 50MB)
             </p>
           </div>
           <div class="flex items-center gap-2.5 mt-2">
@@ -627,6 +627,9 @@
           if (file.fileType === 'html_twitter') {
             badgeText = `Valid Twitter HTML (${file.count || file.data.length} tweets)`;
             iconName = 'code';
+          } else if (file.fileType === 'html_threads') {
+            badgeText = `Valid Threads HTML (${file.count || file.data.length} posts)`;
+            iconName = 'forum';
           } else if (file.fileType === 'html_youtube') {
             badgeText = `Valid YouTube HTML (${file.count || file.data.length} komentar)`;
             iconName = 'comment';
@@ -811,6 +814,80 @@
         return comments;
       }
 
+      function extractThreadsFromHtmlText(htmlContent) {
+        const posts = [];
+        const seenIds = new Set();
+        const postLinkRegex = /href="\/@([^\/"'\s]+)\/post\/([a-zA-Z0-9_\-]+)"/g;
+        let match;
+        const postIndices = [];
+
+        while ((match = postLinkRegex.exec(htmlContent)) !== null) {
+          const handle = match[1];
+          const postId = match[2];
+          if (!seenIds.has(postId)) {
+            seenIds.add(postId);
+            postIndices.push({
+              handle: handle,
+              postId: postId,
+              index: match.index,
+              postUrl: `https://www.threads.net/@${handle}/post/${postId}`
+            });
+          }
+        }
+
+        for (let i = 0; i < postIndices.length; i++) {
+          const curr = postIndices[i];
+          const nextIdx = (i + 1 < postIndices.length) ? postIndices[i + 1].index : htmlContent.length;
+
+          const timeSnippet = htmlContent.substring(Math.max(0, curr.index - 500), curr.index + 500);
+          let createdAt = '';
+          const timeMatch = timeSnippet.match(/datetime="([^"]*)"/i);
+          if (timeMatch) createdAt = timeMatch[1];
+
+          const postChunk = htmlContent.substring(curr.index, nextIdx);
+          let actionPos = postChunk.search(/title="(?:Suka|Like)"/i);
+          if (actionPos === -1) actionPos = postChunk.indexOf('x4vbgl9');
+          if (actionPos === -1) actionPos = postChunk.length;
+
+          const contentChunk = postChunk.substring(0, actionPos);
+          const paragraphs = [];
+          const dirRegex = /dir="auto"[^>]*>([\s\S]*?)<\/span>/gi;
+          let dMatch;
+          while ((dMatch = dirRegex.exec(contentChunk)) !== null) {
+            const clean = dMatch[1].replace(/<[^>]+>/g, '').trim();
+            if (clean && clean.length > 1 && !clean.match(/^\d+\s*(?:jam|hari|m|h|d|detik|menit)$/i) && clean !== 'Lainnya') {
+              if (!paragraphs.some(p => p === clean || p.includes(clean))) {
+                paragraphs.push(clean);
+              }
+            }
+          }
+          const fullText = paragraphs.join('\n\n').trim();
+
+          let likes = 0, replies = 0, retweets = 0;
+          const actionsChunk = postChunk.substring(actionPos, Math.min(postChunk.length, actionPos + 3000));
+          const likeMatch = actionsChunk.match(/title="(?:Suka|Like)"[\s\S]*?<span[^>]*class="[^"]*(?:x1o0tod|x13vifvy)[^"]*"[^>]*>([^<]+)<\/span>/i);
+          if (likeMatch) likes = parseMetricNumber(likeMatch[1]);
+          const replyMatch = actionsChunk.match(/title="(?:Balas|Reply)"[\s\S]*?<span[^>]*class="[^"]*(?:x1o0tod|x13vifvy)[^"]*"[^>]*>([^<]+)<\/span>/i);
+          if (replyMatch) replies = parseMetricNumber(replyMatch[1]);
+          const repostMatch = actionsChunk.match(/title="(?:Posting ulang|Repost)"[\s\S]*?<span[^>]*class="[^"]*(?:x1o0tod|x13vifvy)[^"]*"[^>]*>([^<]+)<\/span>/i);
+          if (repostMatch) retweets = parseMetricNumber(repostMatch[1]);
+
+          posts.push({
+            id: curr.postId,
+            full_text: fullText,
+            created_at: createdAt,
+            username: `@${curr.handle}`,
+            user_name: curr.handle,
+            likes: likes,
+            retweets: retweets,
+            replies: replies,
+            views: 0,
+            tweet_url: curr.postUrl
+          });
+        }
+        return posts;
+      }
+
       function handleFilesAddition(files) {
         hideValidationError();
         let invalidCount = 0;
@@ -832,8 +909,24 @@
             const textContent = evt.target.result;
 
             if (isHtml) {
-              // Deteksi Twitter HTML atau YouTube HTML
-              if (textContent.includes('<article') || textContent.includes('x.com') || textContent.includes('timeline-search')) {
+              // Deteksi Twitter, Threads, atau YouTube HTML
+              if (textContent.includes('/post/') || textContent.includes('threads.net')) {
+                const posts = extractThreadsFromHtmlText(textContent);
+                if (posts.length === 0) {
+                  showValidationError(`Berkas HTML "${file.name}" tidak memuat elemen postingan Threads yang valid.`);
+                  return;
+                }
+                if (!stagedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                  stagedFiles.push({
+                    name: file.name,
+                    size: file.size,
+                    fileType: 'html_threads',
+                    count: posts.length,
+                    data: posts
+                  });
+                  updateInterfaceState();
+                }
+              } else if (textContent.includes('<article') || textContent.includes('x.com') || textContent.includes('timeline-search')) {
                 const tweets = extractTweetsFromXHtmlText(textContent);
                 if (tweets.length === 0) {
                   showValidationError(`Berkas HTML "${file.name}" tidak memuat elemen <article> tweet Twitter/X yang valid.`);
@@ -866,7 +959,7 @@
                   updateInterfaceState();
                 }
               } else {
-                showValidationError(`Berkas HTML "${file.name}" bukan format dokumen Twitter atau YouTube yang dikenali.`);
+                showValidationError(`Berkas HTML "${file.name}" bukan format dokumen Twitter, Threads, atau YouTube yang dikenali.`);
               }
               return;
             }

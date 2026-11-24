@@ -3,16 +3,71 @@
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>Twitter Scraping Dataset Pipeline // Obsidian Precision</title>
+  <title>Need data? Scrape it. // Multi-Platform Scraping Dataset Pipeline</title>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     @layer base {
-      html, body { margin:0; padding:0; }
-      body { overscroll-behavior:none; }
-      main > :first-child { margin-top:0!important; }
-      main > :last-child { margin-bottom:0!important; }
+      html {
+        scroll-behavior: smooth;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #0d0e13;
+        color: #e3e1e9;
+      }
     }
-    ::-webkit-scrollbar { display:none; }
+    /* Minimalist Dark Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121318;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #292a2f;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #38bdf8;
+    }
+
+    /* Kinetic Text Gradient Animation */
+    @keyframes kinetic-gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .animate-kinetic {
+      background: linear-gradient(90deg, #38bdf8, #8ed5ff, #4ee6aa, #38bdf8);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: kinetic-gradient 6s ease infinite;
+    }
+
+    /* Mouse scroll animation */
+    @keyframes mouse-wheel {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(8px); }
+    }
+    .animate-wheel {
+      animation: mouse-wheel 1.6s infinite ease-out;
+    }
+
+    /* Subtle background grid pattern */
+    .bg-grid-pattern {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
   </style>
   <script src="https://cdn.tailwindcss.com"></script>
   <script id="tailwind-config">
@@ -92,54 +147,281 @@
     };
   </script>
 </head>
-<body class="bg-surface-container-lowest font-body-default text-body-default text-on-surface min-h-screen">
-  <main class="w-full min-h-screen flex flex-col items-center justify-center p-4 md:p-6">
+<body class="bg-surface-container-lowest font-body-default text-body-default text-on-surface min-h-screen selection:bg-primary/30 selection:text-primary">
+
+  <!-- ========================================================================= -->
+  <!-- HERO SECTION: "Need data? Scrape it." (Obsidian Precision Animated)      -->
+  <!-- ========================================================================= -->
+  <header id="hero-section" class="relative w-full min-h-[92vh] flex flex-col justify-between items-center px-4 py-8 md:py-12 bg-grid-pattern border-b border-outline-variant/20 overflow-hidden">
+    <!-- Subtle Ambient Glow -->
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute -bottom-32 left-1/4 w-[400px] h-[250px] bg-tertiary/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <!-- Top Navigation Bar -->
+    <nav class="relative z-10 w-full max-w-6xl flex items-center justify-between py-2 border-b border-outline-variant/20">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center border border-outline-variant/40 text-primary shadow-inner">
+          <span class="material-symbols-outlined text-lg">dataset</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-display-lg text-sm font-bold tracking-tight text-on-surface">SCRAPING PIPELINE</span>
+          <span class="font-label-sm text-[10px] text-on-surface-variant tracking-wider uppercase">V3.0.0 // CLIENT-SIDE</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="#section-tutorial" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface-variant hover:text-on-surface font-body-strong text-xs transition-colors">
+          <span class="material-symbols-outlined text-sm text-primary">extension</span>
+          <span>Tutorial Ekstensi</span>
+        </a>
+        <a href="#section-workspace" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary-container hover:bg-primary text-surface-container-lowest font-body-strong text-xs font-semibold shadow transition-all hover:scale-[1.02]">
+          <span>Mulai Parsing</span>
+          <span class="material-symbols-outlined text-sm">arrow_downward</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Center Hero Slogan & Subtitle -->
+    <div class="relative z-10 flex flex-col items-center justify-center text-center max-w-3xl my-auto px-4 py-8">
+      <!-- Badge Meta -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container/90 border border-outline-variant/40 mb-6 backdrop-blur shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+        <span class="font-label-sm text-[11px] text-primary tracking-wider uppercase font-semibold">
+          100% Client-Side Engine // No API Key Required
+        </span>
+      </div>
+
+      <!-- Main Animated Headline -->
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight font-display-lg leading-[1.1] mb-5">
+        <span class="text-on-surface">Need data?</span><br/>
+        <span class="animate-kinetic">Scrape it.</span>
+      </h1>
+
+      <!-- Subtitle Description -->
+      <p class="font-body-muted text-sm sm:text-base md:text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed mb-8">
+        Ekstraksi dataset sosial media langsung dari browser Anda tanpa token limit, tanpa server backend, dan zero cloud leak. Konversi tangkapan stream DOM Twitter/X, komentar YouTube, Threads, TikTok, dan ulasan Shopee menjadi CSV/JSON siap olah.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="#section-workspace" class="h-11 px-6 rounded-lg bg-primary-container hover:bg-primary text-surface-container-lowest font-body-strong text-sm font-semibold flex items-center gap-2 shadow-lg shadow-primary-container/20 transition-all hover:scale-[1.03] active:scale-[0.98]">
+          <span class="material-symbols-outlined text-base">table_view</span>
+          <span>Buka Workspace Parsing</span>
+          <span class="material-symbols-outlined text-sm">arrow_downward</span>
+        </a>
+        <a href="#section-tutorial" class="h-11 px-5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/40 text-on-surface font-body-strong text-sm flex items-center gap-2 transition-all hover:border-primary/50">
+          <span class="material-symbols-outlined text-base text-primary">menu_book</span>
+          <span>Panduan Microsoft Edge / Chrome</span>
+        </a>
+      </div>
+
+      <!-- Feature Pill Stack -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-12 w-full max-w-2xl text-left">
+        <div class="p-3 bg-surface-container/60 border border-outline-variant/20 rounded-lg backdrop-blur flex flex-col">
+          <span class="font-label-sm text-[10px] text-on-surface-variant uppercase">Platform</span>
+          <span class="font-body-strong text-xs text-on-surface mt-0.5">X, YT, Threads, TikTok</span>
+        </div>
+        <div class="p-3 bg-surface-container/60 border border-outline-variant/20 rounded-lg backdrop-blur flex flex-col">
+          <span class="font-label-sm text-[10px] text-on-surface-variant uppercase">Runtime</span>
+          <span class="font-body-strong text-xs text-tertiary mt-0.5">Pure In-Memory JS</span>
+        </div>
+        <div class="p-3 bg-surface-container/60 border border-outline-variant/20 rounded-lg backdrop-blur flex flex-col">
+          <span class="font-label-sm text-[10px] text-on-surface-variant uppercase">Keamanan</span>
+          <span class="font-body-strong text-xs text-primary mt-0.5">Zero Data Leakage</span>
+        </div>
+        <div class="p-3 bg-surface-container/60 border border-outline-variant/20 rounded-lg backdrop-blur flex flex-col">
+          <span class="font-label-sm text-[10px] text-on-surface-variant uppercase">Output</span>
+          <span class="font-body-strong text-xs text-on-surface mt-0.5">Clean CSV &amp; JSON</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Down Indicator (Interactive & Animated) -->
+    <a href="#section-workspace" class="relative z-10 flex flex-col items-center gap-2 text-on-surface-variant/70 hover:text-primary transition-colors cursor-pointer group mt-4">
+      <div class="w-5 h-8 rounded-full border-2 border-outline-variant/60 group-hover:border-primary flex items-start justify-center p-1 transition-colors">
+        <div class="w-1 h-2 rounded-full bg-primary animate-wheel"></div>
+      </div>
+      <div class="flex items-center gap-1 font-label-sm text-[11px] tracking-widest uppercase">
+        <span>Scroll ke bawah untuk parsing</span>
+        <span class="material-symbols-outlined text-sm group-hover:translate-y-0.5 transition-transform">expand_more</span>
+      </div>
+    </a>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- SECTION TUTORIAL: BROWSER EXTENSION QUICK GUIDE (EDGE / CHROME)          -->
+  <!-- ========================================================================= -->
+  <section id="section-tutorial" class="w-full max-w-5xl mx-auto py-14 px-4 sm:px-6 flex flex-col gap-8 border-b border-outline-variant/20">
+    <div class="flex flex-col gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container font-label-sm text-xs text-primary tracking-wider uppercase">
+          CARA KERJA EKSTENSI // EXTENSION TUTORIAL
+        </span>
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+        <span class="font-meta-numeric text-xs text-on-surface-variant">EDGE &amp; CHROME</span>
+      </div>
+      <h2 class="font-display-lg text-2xl md:text-3xl font-semibold text-on-surface tracking-tight">
+        Panduan Menggunakan Browser Extension
+      </h2>
+      <p class="font-body-muted text-sm text-on-surface-variant max-w-2xl">
+        Ekstensi browser ini membaca streaming data langsung dari tab aktif tanpa perlu login API resmi. Ikuti 4 langkah mudah untuk mulai scraping:
+      </p>
+    </div>
+
+    <!-- Step Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <!-- Step 1 -->
+      <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-outline-variant transition-colors">
+        <div class="flex items-center justify-between">
+          <span class="font-label-sm text-xs text-primary font-bold">LANGKAH 01</span>
+          <span class="material-symbols-outlined text-base text-primary">install_desktop</span>
+        </div>
+        <h3 class="font-body-strong text-sm font-semibold text-on-surface">Pasang Ekstensi</h3>
+        <p class="font-body-muted text-xs text-on-surface-variant leading-relaxed">
+          Buka <code class="font-code-inline text-[11px] text-primary">edge://extensions</code> atau <code class="font-code-inline text-[11px] text-primary">chrome://extensions</code>. Aktifkan <strong>Developer Mode</strong>, klik <strong>Load Unpacked</strong>, lalu pilih folder <code class="font-code-inline text-[11px] text-on-surface">extension</code>.
+        </p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-outline-variant transition-colors">
+        <div class="flex items-center justify-between">
+          <span class="font-label-sm text-xs text-outline font-bold">LANGKAH 02</span>
+          <span class="material-symbols-outlined text-base text-outline">tab</span>
+        </div>
+        <h3 class="font-body-strong text-sm font-semibold text-on-surface">Buka Tab Target</h3>
+        <p class="font-body-muted text-xs text-on-surface-variant leading-relaxed">
+          Buka halaman yang ingin Anda scrape di tab aktif (misal: pencarian tweet <code class="font-code-inline text-[11px]">x.com/search</code>, video YouTube, atau feed Threads).
+        </p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-outline-variant transition-colors">
+        <div class="flex items-center justify-between">
+          <span class="font-label-sm text-xs text-outline font-bold">LANGKAH 03</span>
+          <span class="material-symbols-outlined text-base text-outline">radar</span>
+        </div>
+        <h3 class="font-body-strong text-sm font-semibold text-on-surface">Scan / Auto Scroll</h3>
+        <p class="font-body-muted text-xs text-on-surface-variant leading-relaxed">
+          Buka popup ekstensi dari toolbar browser. Pilih platform, lalu klik <strong>"Scan Halaman Saat Ini"</strong> (ekstraksi instan) atau jalankan <strong>"Auto Scroll"</strong> untuk stream berkala.
+        </p>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="p-4 bg-surface-container-low rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 hover:border-tertiary/60 transition-colors">
+        <div class="flex items-center justify-between">
+          <span class="font-label-sm text-xs text-tertiary font-bold">LANGKAH 04</span>
+          <span class="material-symbols-outlined text-base text-tertiary">file_download</span>
+        </div>
+        <h3 class="font-body-strong text-sm font-semibold text-on-surface">Unduh &amp; Drag ke Sini</h3>
+        <p class="font-body-muted text-xs text-on-surface-variant leading-relaxed">
+          Klik tombol <strong>Export JSON</strong> di popup (atau simpan HTML halaman via <code class="font-code-inline text-[11px]">Ctrl+S</code>), kemudian tarik berkas tersebut ke workspace di bawah.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN WORKSPACE CONTAINER                                                 -->
+  <!-- ========================================================================= -->
+  <main id="section-workspace" class="w-full min-h-screen flex flex-col items-center justify-start p-4 md:p-6">
 
     <!-- ========================================================================= -->
-    <!-- VIEW 1: DASHBOARD AWAL // SETUP & INGEST (docs/x_scraper_setup_ingest_tanpa_tabel) -->
+    <!-- VIEW 1: SETUP, PLATFORM SELECTION & INGESTION                            -->
     <!-- ========================================================================= -->
-    <div id="view-setup" class="w-full max-w-4xl mx-auto py-12 px-6 flex flex-col gap-8">
-      <!-- Top Meta Breadcrumb & Title Section -->
+    <div id="view-setup" class="w-full max-w-4xl mx-auto py-8 flex flex-col gap-8">
+      
+      <!-- Top Meta Breadcrumb -->
       <header class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
           <span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container font-label-sm text-xs text-primary tracking-wider">
-            RAW INGESTION // CLIENT-SIDE SCRAPER
+            WORKSPACE // INGESTION &amp; PARSING
           </span>
           <span class="inline-block w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-          <span class="font-meta-numeric text-xs text-on-surface-variant">V2.4.0-STREAM</span>
+          <span class="font-meta-numeric text-xs text-on-surface-variant">MULTI-SOURCE ADAPTER</span>
         </div>
         <div class="flex items-center justify-between mt-1">
           <div class="flex items-center gap-3">
-            <h1 class="font-display-lg text-2xl md:text-3xl font-semibold text-on-surface tracking-tight">
-              Import &amp; Konfigurasi Ekstraksi
-            </h1>
-            <!-- Native Tooltip -->
-            <div class="relative group cursor-help inline-flex items-center">
-              <span class="material-symbols-outlined text-outline hover:text-primary transition-colors text-base select-none">
-                help
-              </span>
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:flex flex-col w-72 p-3 bg-surface-container-high rounded shadow-xl text-on-surface-variant z-20 pointer-events-none text-xs">
-                <span class="font-body-strong text-primary mb-1">Format Payloads</span>
-                <p class="font-body-muted text-on-surface-variant">
-                  Tips: Berkas harus berupa array JSON tweet mentah dari DOM stream atau file hasil capture console Twitter SearchTimeline.
-                </p>
-              </div>
-            </div>
+            <h2 class="font-display-lg text-2xl md:text-3xl font-semibold text-on-surface tracking-tight">
+              Pilih Sosial Media &amp; Masukkan Data
+            </h2>
           </div>
         </div>
         <p class="font-body-default text-sm text-on-surface-variant">
-          Upload payload tweet hasil scraping browser console atau ikuti panduan ekstraksi cepat.
+          Pilih target sosial media, lalu tarik berkas hasil scrape (<code class="font-code-inline text-primary">.json</code> / <code class="font-code-inline text-primary">.html</code>) atau klik tombol sampel untuk uji coba instan.
         </p>
       </header>
 
-      <!-- Section 1: File Dropzone & Staged File Manifest -->
+      <!-- ===================================================================== -->
+      <!-- PLATFORM SELECTOR TABS                                                -->
+      <!-- ===================================================================== -->
+      <section class="flex flex-col gap-3">
+        <label class="font-label-sm text-xs text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm text-primary">hub</span>
+          Target Sosial Media:
+        </label>
+        <div id="platform-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+          <!-- X / Twitter -->
+          <button type="button" data-platform="twitter" class="platform-tab active group p-3 rounded-xl border border-primary bg-surface-container-high text-left flex flex-col justify-between gap-2 transition-all cursor-pointer shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-label-sm text-[11px] font-bold text-primary">X (TWITTER)</span>
+              <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+            </div>
+            <span class="font-body-strong text-xs text-on-surface">Search &amp; Timeline</span>
+            <span class="font-meta-numeric text-[10px] text-tertiary">Stabil (HTML/JSON)</span>
+          </button>
+
+          <!-- YouTube Comments -->
+          <button type="button" data-platform="youtube" class="platform-tab group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="font-label-sm text-[11px] font-bold text-on-surface-variant group-hover:text-primary transition-colors">YOUTUBE</span>
+              <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+            </div>
+            <span class="font-body-strong text-xs text-on-surface">Video Comments</span>
+            <span class="font-meta-numeric text-[10px] text-tertiary">Stabil (DOM HTML)</span>
+          </button>
+
+          <!-- Threads -->
+          <button type="button" data-platform="threads" class="platform-tab group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="font-label-sm text-[11px] font-bold text-on-surface-variant group-hover:text-primary transition-colors">THREADS</span>
+              <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+            </div>
+            <span class="font-body-strong text-xs text-on-surface">Timeline &amp; Posts</span>
+            <span class="font-meta-numeric text-[10px] text-tertiary">Stabil (DOM HTML)</span>
+          </button>
+
+          <!-- TikTok -->
+          <button type="button" data-platform="tiktok" class="platform-tab group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="font-label-sm text-[11px] font-bold text-on-surface-variant group-hover:text-primary transition-colors">TIKTOK</span>
+              <span class="w-2 h-2 rounded-full bg-primary-container"></span>
+            </div>
+            <span class="font-body-strong text-xs text-on-surface">Video Comments</span>
+            <span class="font-meta-numeric text-[10px] text-primary">Aktif (HTML)</span>
+          </button>
+
+          <!-- Shopee -->
+          <button type="button" data-platform="shopee" class="platform-tab group p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container text-left flex flex-col justify-between gap-2 transition-all cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="font-label-sm text-[11px] font-bold text-on-surface-variant group-hover:text-primary transition-colors">SHOPEE</span>
+              <span class="w-2 h-2 rounded-full bg-primary-container"></span>
+            </div>
+            <span class="font-body-strong text-xs text-on-surface">Product Reviews</span>
+            <span class="font-meta-numeric text-[10px] text-primary">Aktif (HTML)</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- SECTION 1: DROPZONE & SAMPLE BONE LOADER                              -->
+      <!-- ===================================================================== -->
       <section class="flex flex-col gap-4">
         <!-- Error Alert Banner -->
         <div id="validation-error" class="hidden p-3.5 rounded-lg bg-error-container/20 border border-error/40 text-error flex items-start gap-2.5 text-xs font-body-default">
           <span class="material-symbols-outlined text-base shrink-0 mt-0.5">error</span>
           <div class="flex-1">
             <span class="font-semibold block mb-0.5">Validasi Berkas Gagal</span>
-            <span id="validation-error-msg">Berkas tidak memenuhi format payload Twitter yang valid.</span>
+            <span id="validation-error-msg">Berkas tidak memenuhi format payload data yang valid.</span>
           </div>
           <button type="button" onclick="document.getElementById('validation-error').classList.add('hidden')" class="text-error/70 hover:text-error">
             <span class="material-symbols-outlined text-sm">close</span>
@@ -151,18 +433,23 @@
             <span class="material-symbols-outlined text-xl">upload_file</span>
           </div>
           <div class="flex flex-col gap-1">
-            <p class="font-body-strong text-sm text-on-surface">
-              Tarik berkas <span class="font-code-inline text-primary">.json</span> atau <span class="font-code-inline text-primary">.html</span> hasil scraping ke sini
+            <p id="dropzone-title" class="font-body-strong text-sm text-on-surface">
+              Tarik berkas <span class="font-code-inline text-primary">.html</span> atau <span class="font-code-inline text-primary">.json</span> tweet X ke sini
             </p>
-            <p class="font-body-muted text-xs text-on-surface-variant">
-              Mendukung HTML Twitter, Threads (threads-timeline.html), YouTube, dan JSON SearchTimeline (Maksimal 50MB)
+            <p id="dropzone-subtitle" class="font-body-muted text-xs text-on-surface-variant">
+              Mendukung HTML Save Page Twitter Search &amp; JSON XHR SearchTimeline (Maksimal 50MB)
             </p>
           </div>
-          <div class="flex items-center gap-2.5 mt-2">
+          
+          <div class="flex flex-wrap items-center justify-center gap-2.5 mt-2">
             <input accept=".json,.html,.htm" class="hidden" id="file-input" multiple type="file"/>
-            <button class="h-8 px-4 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-body-strong text-xs transition-colors flex items-center gap-1.5 shadow-sm" onclick="document.getElementById('file-input').click()" type="button">
+            <button class="h-8 px-4 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-body-strong text-xs transition-colors flex items-center gap-1.5 shadow-sm cursor-pointer" onclick="document.getElementById('file-input').click()" type="button">
               <span class="material-symbols-outlined text-sm">folder_open</span>
               Pilih File
+            </button>
+            <button id="btn-load-sample" class="h-8 px-3.5 rounded bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 font-body-strong text-xs transition-colors flex items-center gap-1.5 cursor-pointer" type="button">
+              <span class="material-symbols-outlined text-sm">bolt</span>
+              <span id="btn-sample-label">⚡ Muat Sampel (X Timeline)</span>
             </button>
           </div>
         </div>
@@ -171,18 +458,20 @@
         <div class="flex flex-col gap-2" id="file-list"></div>
       </section>
 
-      <!-- Section 2: Quick Browser Console Extraction Steps -->
+      <!-- ===================================================================== -->
+      <!-- SECTION 2: QUICK CONSOLE SNIPPET (FALLBACK SCRAPING)                  -->
+      <!-- ===================================================================== -->
       <section class="flex flex-col gap-3 bg-surface-container-low rounded-xl p-5 shadow-sm">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-lg">terminal</span>
-            <h2 class="font-headline-sm text-sm font-semibold text-on-surface">
-              Langkah Cepat Scraping Console
-            </h2>
+            <h3 class="font-headline-sm text-sm font-semibold text-on-surface">
+              Alternatif: Scraping via Browser Console
+            </h3>
           </div>
-          <button class="h-7 px-2.5 rounded bg-surface-container-high hover:bg-surface-bright text-primary font-code-inline text-xs flex items-center gap-1.5 transition-colors" id="copy-snippet-btn" type="button">
+          <button class="h-7 px-2.5 rounded bg-surface-container-high hover:bg-surface-bright text-primary font-code-inline text-xs flex items-center gap-1.5 transition-colors cursor-pointer" id="copy-snippet-btn" type="button">
             <span class="material-symbols-outlined text-xs">content_copy</span>
-            <span id="copy-btn-text">Salin Snippet</span>
+            <span id="copy-btn-text">Salin Snippet Twitter</span>
           </button>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-5 gap-2 mt-1">
@@ -200,7 +489,7 @@
               <span class="material-symbols-outlined text-xs text-outline">open_in_new</span>
             </div>
             <span class="font-body-strong text-on-surface text-xs mt-1">Buka Console</span>
-            <p class="font-body-muted text-xs text-on-surface-variant">Buka x.com/search lalu tekan F12.</p>
+            <p class="font-body-muted text-xs text-on-surface-variant">Buka tab web lalu tekan F12.</p>
           </div>
           <div class="flex flex-col gap-1 p-3 bg-surface-container rounded-lg">
             <div class="flex items-center justify-between">
@@ -215,8 +504,8 @@
               <span class="font-label-sm text-[11px] text-outline">STEP 04</span>
               <span class="material-symbols-outlined text-xs text-outline">search</span>
             </div>
-            <span class="font-body-strong text-on-surface text-xs mt-1">Query Target</span>
-            <p class="font-body-muted text-xs text-on-surface-variant">Scroll feed tweet untuk ekstraksi data.</p>
+            <span class="font-body-strong text-on-surface text-xs mt-1">Scroll Feed</span>
+            <p class="font-body-muted text-xs text-on-surface-variant">Scroll konten untuk ekstraksi data.</p>
           </div>
           <div class="flex flex-col gap-1 p-3 bg-surface-container rounded-lg">
             <div class="flex items-center justify-between">
@@ -229,14 +518,16 @@
         </div>
       </section>
 
-      <!-- Section 3: Column Schema Preview & Customization (MUNCUL HANYA SETELAH INPUT ADA) -->
-      <section id="section-schema" class="hidden flex flex-col gap-4 bg-surface-container-low rounded-xl p-5 shadow-sm">
+      <!-- ===================================================================== -->
+      <!-- SECTION 3: COLUMN SCHEMA PREVIEW (SHOWN AFTER INPUT IS PRESENT)       -->
+      <!-- ===================================================================== -->
+      <section id="section-schema" class="hidden flex flex-col gap-4 bg-surface-container-low rounded-xl p-5 shadow-sm border border-outline-variant/30">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div class="flex flex-col">
             <div class="flex items-center gap-2">
-              <h2 class="font-headline-sm text-sm font-semibold text-on-surface" id="schema-count-title">
+              <h3 class="font-headline-sm text-sm font-semibold text-on-surface" id="schema-count-title">
                 Skema Kolom Terdeteksi (10 Kolom)
-              </h2>
+              </h3>
               <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container-high font-label-sm text-[11px] text-primary">
                 TERDETEKSI DARI INPUT
               </span>
@@ -245,7 +536,7 @@
               Klik tanda silang untuk mengecualikan kolom tertentu dari hasil parsing tabel dan ekspor.
             </p>
           </div>
-          <button class="self-start sm:self-auto h-7 px-2.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-body-strong text-xs flex items-center gap-1.5 transition-colors" id="btn-reset-schema" type="button">
+          <button class="self-start sm:self-auto h-7 px-2.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface font-body-strong text-xs flex items-center gap-1.5 transition-colors cursor-pointer" id="btn-reset-schema" type="button">
             <span class="material-symbols-outlined text-xs">restart_alt</span>
             Reset Skema
           </button>
@@ -253,7 +544,7 @@
         <!-- Tag Cloud Schema Selection -->
         <div class="flex flex-wrap gap-2 pt-2" id="schema-pills"></div>
         <!-- Schema Status Footer Inside Panel -->
-        <div class="flex items-center justify-between pt-3 text-on-surface-variant text-xs">
+        <div class="flex items-center justify-between pt-3 text-on-surface-variant text-xs border-t border-outline-variant/20">
           <div class="flex items-center gap-2 font-meta-numeric">
             <span class="inline-block w-2 h-2 rounded-sm bg-primary-container"></span>
             <span id="active-columns-metric">10 / 10 kolom diikutsertakan</span>
@@ -262,16 +553,18 @@
         </div>
       </section>
 
-      <!-- Bottom Actions Workspace Bar -->
+      <!-- ===================================================================== -->
+      <!-- BOTTOM ACTIONS WORKSPACE BAR                                          -->
+      <!-- ===================================================================== -->
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
         <div class="flex items-center gap-3">
           <span class="material-symbols-outlined text-tertiary text-sm">verified_user</span>
           <span class="font-body-muted text-xs text-on-surface-variant">
-            Parsing lokal di memori server. Tidak ada data diunggah ke layanan pihak ketiga.
+            Parsing lokal di memori browser. Tidak ada berkas dikirim ke server.
           </span>
         </div>
         <div class="flex items-center gap-3 w-full sm:w-auto">
-          <button class="w-full sm:w-auto h-10 px-5 rounded-lg bg-primary-container hover:bg-primary text-surface-container-lowest font-body-strong text-sm flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer font-semibold disabled:opacity-40 disabled:cursor-not-allowed" id="btn-submit" type="button">
+          <button class="w-full sm:w-auto h-11 px-6 rounded-lg bg-primary-container hover:bg-primary text-surface-container-lowest font-body-strong text-sm flex items-center justify-center gap-2 shadow transition-all cursor-pointer font-semibold disabled:opacity-40 disabled:cursor-not-allowed" id="btn-submit" type="button">
             <span class="material-symbols-outlined text-base">table_view</span>
             <span id="btn-submit-text">Muat Data ke Tabel (Submit)</span>
             <span class="font-code-inline text-xs ml-1 opacity-70">↵</span>
@@ -281,14 +574,14 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- VIEW 2: DASHBOARD SETELAH PARSING // DATA TABLE (docs/x_scraper_datase_dengan_tabel) -->
+    <!-- VIEW 2: DASHBOARD SETELAH PARSING // DATA TABLE & EXPORT                  -->
     <!-- ========================================================================= -->
-    <div id="view-table" class="hidden flex flex-col w-full max-w-6xl mx-auto py-10 px-6 gap-y-6">
+    <div id="view-table" class="hidden flex flex-col w-full max-w-6xl mx-auto py-8 gap-y-6">
       <!-- Header Context & Action Bar -->
       <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-outline-variant/30">
         <div class="flex flex-col gap-1.5">
           <div class="flex items-center gap-3">
-            <h1 class="font-headline-md text-2xl font-semibold text-on-surface tracking-tight">Dataset Scraped X</h1>
+            <h2 class="font-headline-md text-2xl font-semibold text-on-surface tracking-tight" id="table-view-title">Dataset Hasil Ekstraksi</h2>
             <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-xs border border-outline-variant/40">
               <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
               Ready
@@ -298,7 +591,7 @@
             </span>
           </div>
           <p class="font-body-muted text-xs text-on-surface-variant" id="header-desc">
-            Menampilkan data tweet hasil ekstraksi payload.
+            Menampilkan data record hasil ekstraksi payload lokal.
           </p>
         </div>
         <!-- Actions -->
@@ -322,48 +615,48 @@
       <!-- Metric Summary Strip -->
       <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div class="p-3.5 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1">
-          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Total Tweet</span>
+          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Total Item / Record</span>
           <div class="flex items-baseline justify-between mt-1">
             <span class="font-meta-numeric text-xl text-on-surface font-semibold" id="metric-total-tweets">0</span>
-            <span class="font-label-sm text-[11px] text-tertiary font-mono" id="metric-match-badge">+100% matched</span>
+            <span class="font-label-sm text-[11px] text-tertiary font-mono" id="metric-match-badge">+100% parsed</span>
           </div>
         </div>
         <div class="p-3.5 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1">
-          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Akun Unik</span>
+          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Akun / Author Unik</span>
           <div class="flex items-baseline justify-between mt-1">
             <span class="font-meta-numeric text-xl text-on-surface font-semibold" id="metric-unique-authors">0</span>
             <span class="font-label-sm text-[11px] text-on-surface-variant font-mono" id="metric-density">0% density</span>
           </div>
         </div>
         <div class="p-3.5 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1">
-          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Total Interaksi</span>
+          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Total Interaksi / Like</span>
           <div class="flex items-baseline justify-between mt-1">
             <span class="font-meta-numeric text-xl text-on-surface font-semibold" id="metric-total-interactions">0</span>
-            <span class="font-label-sm text-[11px] text-primary font-mono" id="metric-avg-interaction">0 / tweet</span>
+            <span class="font-label-sm text-[11px] text-primary font-mono" id="metric-avg-interaction">0 / item</span>
           </div>
         </div>
         <div class="p-3.5 bg-surface-container-low rounded border border-outline-variant/30 flex flex-col gap-1">
-          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Rentang Waktu</span>
+          <span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Status Sumber</span>
           <div class="flex items-baseline justify-between mt-1">
-            <span class="font-meta-numeric text-base text-on-surface font-semibold truncate" id="metric-time-range">Realtime</span>
-            <span class="font-label-sm text-[11px] text-on-surface-variant font-mono">Dataset Range</span>
+            <span class="font-meta-numeric text-base text-on-surface font-semibold truncate" id="metric-time-range">In-Memory</span>
+            <span class="font-label-sm text-[11px] text-tertiary font-mono">Validated</span>
           </div>
         </div>
       </section>
 
       <!-- Filter & Query Control Strip -->
-      <section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface-container-low p-2 rounded border border-outline-variant/30">
+      <section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface-container-low p-2.5 rounded border border-outline-variant/30">
         <div class="relative flex-1 flex items-center min-w-0">
           <span class="material-symbols-outlined text-[18px] text-outline absolute left-3 pointer-events-none">search</span>
-          <input id="table-search-input" class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline/70 pl-9 pr-3 py-1.5 text-xs font-code-inline rounded border border-outline-variant/40 focus:outline-none focus:border-primary transition-colors" placeholder="Cari keyword, username (@...), atau Tweet ID..." type="text"/>
+          <input id="table-search-input" class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline/70 pl-9 pr-3 py-1.5 text-xs font-code-inline rounded border border-outline-variant/40 focus:outline-none focus:border-primary transition-colors" placeholder="Cari keyword konten, author (@...), atau ID..." type="text"/>
         </div>
         <div class="flex items-center gap-2 self-end sm:self-auto">
           <div class="relative">
             <select id="table-sort-select" class="appearance-none bg-surface-container-lowest text-on-surface-variant hover:text-on-surface pl-3 pr-8 py-1.5 text-xs font-body-default rounded border border-outline-variant/40 focus:outline-none focus:border-primary cursor-pointer transition-colors">
-              <option value="default">Urutkan: Default</option>
-              <option value="likes">Paling Banyak Likes</option>
-              <option value="retweets">Paling Banyak Retweets</option>
-              <option value="replies">Paling Banyak Replies</option>
+              <option value="default">Urutkan: Urutan Asli</option>
+              <option value="likes">Paling Banyak Likes / Rating</option>
+              <option value="retweets">Paling Banyak Reposts / Shares</option>
+              <option value="replies">Paling Banyak Balasan</option>
             </select>
             <span class="material-symbols-outlined text-[16px] text-outline absolute right-2 top-2 pointer-events-none">expand_more</span>
           </div>
@@ -381,12 +674,12 @@
             <thead>
               <tr class="border-b border-outline-variant/30 bg-surface-container-low/60 text-outline font-label-sm text-[11px] uppercase select-none tracking-wider">
                 <th class="w-10 px-4 py-2.5">#</th>
-                <th class="px-3 py-2.5 font-mono text-[11px]">Tweet ID</th>
+                <th class="px-3 py-2.5 font-mono text-[11px]">Record ID</th>
                 <th class="px-3 py-2.5 font-mono text-[11px]">Waktu</th>
-                <th class="px-3 py-2.5 font-mono text-[11px]">Author</th>
-                <th class="px-4 py-2.5 font-sans min-w-[340px]">Konten Tweet</th>
+                <th class="px-3 py-2.5 font-mono text-[11px]">Author / User</th>
+                <th class="px-4 py-2.5 font-sans min-w-[340px]">Konten / Teks</th>
                 <th class="px-3 py-2.5 font-mono text-[11px] text-right">Reply</th>
-                <th class="px-3 py-2.5 font-mono text-[11px] text-right">RT</th>
+                <th class="px-3 py-2.5 font-mono text-[11px] text-right">RT/Share</th>
                 <th class="px-3 py-2.5 font-mono text-[11px] text-right">Like</th>
                 <th class="px-3 py-2.5 font-mono text-[11px] text-right">Views</th>
                 <th class="px-4 py-2.5 font-mono text-[11px] text-center">Aksi</th>
@@ -402,7 +695,7 @@
         <div class="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t border-outline-variant/30 bg-surface-container-low/40">
           <div class="flex items-center gap-3">
             <span class="font-mono text-xs text-outline" id="pagination-info">
-              Menampilkan <span class="text-on-surface font-medium" id="page-range">0-0</span> dari <span class="text-on-surface font-medium" id="page-total">0</span> tweet
+              Menampilkan <span class="text-on-surface font-medium" id="page-range">0-0</span> dari <span class="text-on-surface font-medium" id="page-total">0</span> record
             </span>
             <div class="h-3 w-px bg-outline-variant/40"></div>
             <div class="flex items-center gap-1.5 font-label-sm text-xs text-outline">
@@ -428,7 +721,7 @@
         <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-base">data_object</span>
-            <h3 class="font-headline-sm text-sm font-semibold text-on-surface" id="json-modal-title">Tweet Object JSON</h3>
+            <h3 class="font-headline-sm text-sm font-semibold text-on-surface" id="json-modal-title">Record Object JSON</h3>
           </div>
           <button type="button" onclick="document.getElementById('json-modal').classList.add('hidden')" class="w-6 h-6 rounded flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container transition-colors">
             <span class="material-symbols-outlined text-sm">close</span>
@@ -437,7 +730,7 @@
         <pre class="bg-surface-container-lowest p-4 rounded-lg font-code-block text-xs text-on-surface-variant overflow-x-auto max-h-96" id="json-modal-content"></pre>
         <div class="flex justify-end gap-2">
           <a id="json-modal-link" href="#" target="_blank" class="h-8 px-3 rounded bg-surface-container hover:bg-surface-container-high text-primary font-body-strong text-xs flex items-center gap-1.5 transition-colors">
-            <span>Buka di X (Twitter)</span>
+            <span>Buka Link Asli</span>
             <span class="material-symbols-outlined text-xs">open_in_new</span>
           </a>
           <button type="button" onclick="document.getElementById('json-modal').classList.add('hidden')" class="h-8 px-3 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-body-strong text-xs">
@@ -449,50 +742,94 @@
   </main>
 
   <!-- ========================================================================= -->
-  <!-- CLIENT APPLICATION JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT ENGINE & CONTROLLER                                            -->
   <!-- ========================================================================= -->
   <script>
-    (function app() {
-      const defaultColumns = [
-        'id',
-        'full_text',
-        'created_at',
-        'username',
-        'user_name',
-        'likes',
-        'retweets',
-        'replies',
-        'views',
-        'tweet_url'
-      ];
+    (function() {
+      // Platform Configurations
+      const PLATFORM_CONFIG = {
+        twitter: {
+          name: 'X (Twitter)',
+          title: 'Tarik berkas .html atau .json tweet X ke sini',
+          subtitle: 'Mendukung HTML Save Page Twitter Search & JSON XHR SearchTimeline (Maksimal 50MB)',
+          sampleLabel: '⚡ Muat Sampel (X Timeline)',
+          sampleFile: 'docs/sample-bone/timeline-search.html',
+          fileType: 'html_twitter',
+          snippet: `let responseCount = 0; let allResponses = []; window.saveTwitterData = function() { if (allResponses.length === 0) return console.log('❌ Kosong'); const blob = new Blob([JSON.stringify(allResponses, null, 2)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'twitter_bulk_responses.json'; a.click(); }; window.stopCapture = function() { window.saveTwitterData(); console.log('🛑 Selesai: ' + responseCount); }; (function() { const origOpen = XMLHttpRequest.prototype.open; const origSend = XMLHttpRequest.prototype.send; XMLHttpRequest.prototype.open = function(m, u) { this._url = u; return origOpen.apply(this, arguments); }; XMLHttpRequest.prototype.send = function() { this.addEventListener('load', function() { if (this._url && this._url.includes('SearchTimeline') && this.status === 200) { try { allResponses.push(JSON.parse(this.responseText)); responseCount++; console.log('✅ Response #' + responseCount); } catch (e) {} } }); return origSend.apply(this, arguments); }; })(); console.log('🎯 Siap! Scroll feed lalu ketik stopCapture()');`
+        },
+        youtube: {
+          name: 'YouTube Comments',
+          title: 'Tarik berkas .html komentar YouTube (Ctrl+S) ke sini',
+          subtitle: 'Mendukung tangkapan DOM komentar YouTube (<ytd-comment-view-model>) atau hasil ekstensi',
+          sampleLabel: '⚡ Muat Sampel (YouTube Comments)',
+          sampleFile: 'docs/sample-bone/yt-comment-bone.html',
+          fileType: 'html_youtube',
+          snippet: `console.log("Untuk YouTube, buka tab video, scroll komentar, lalu klik Scan Halaman di ekstensi atau simpan via Ctrl+S");`
+        },
+        threads: {
+          name: 'Threads Feed',
+          title: 'Tarik berkas .html timeline Threads (Ctrl+S) ke sini',
+          subtitle: 'Mendukung file HTML halaman threads.net/@user atau JSON dari browser extension',
+          sampleLabel: '⚡ Muat Sampel (Threads Feed)',
+          sampleFile: 'docs/sample-bone/threads-timeline.html',
+          fileType: 'html_threads',
+          snippet: `console.log("Untuk Threads, buka feed threads.net, jalankan ekstensi, atau simpan halaman via Ctrl+S");`
+        },
+        tiktok: {
+          name: 'TikTok Comments',
+          title: 'Tarik berkas .html komentar TikTok (Ctrl+S) ke sini',
+          subtitle: 'Mendukung tangkapan DOM komentar video TikTok (comment-level-1 & comment-level-2)',
+          sampleLabel: '⚡ Muat Sampel (TikTok Comments)',
+          sampleFile: 'docs/sample-bone/tiktok-timeline.html',
+          fileType: 'html_tiktok',
+          snippet: `console.log("Untuk TikTok, buka komentar video tiktok.com, lalu simpan file via Ctrl+S");`
+        },
+        shopee: {
+          name: 'Shopee Reviews',
+          title: 'Tarik berkas .html ulasan produk Shopee (Ctrl+S) ke sini',
+          subtitle: 'Mendukung tangkapan DOM ulasan komentar produk Shopee (shopee-product-comment-list)',
+          sampleLabel: '⚡ Muat Sampel (Shopee Reviews)',
+          sampleFile: 'docs/sample-bone/shopee-review.html',
+          fileType: 'html_shopee',
+          snippet: `console.log("Untuk Shopee, buka tab ulasan produk, simpan via Ctrl+S");`
+        }
+      };
 
+      let activePlatform = 'twitter';
+      let stagedFiles = [];
+      const defaultColumns = [
+        'id', 'created_at', 'username', 'user_name', 
+        'full_text', 'replies', 'retweets', 'likes', 'views', 'tweet_url'
+      ];
       let activeColumns = [...defaultColumns];
-      let stagedFiles = []; // { name, size, data }
-      let parsedTweets = [];
-      let filteredTweets = [];
+      let extractedDataset = [];
+      let currentFilteredData = [];
       let currentPage = 1;
       let rowsPerPage = 25;
       let filterOnlyInteractions = false;
 
       // DOM Elements
-      const viewSetup = document.getElementById('view-setup');
-      const viewTable = document.getElementById('view-table');
-      const fileList = document.getElementById('file-list');
-      const fileInput = document.getElementById('file-input');
       const dropzone = document.getElementById('dropzone');
+      const dropzoneTitle = document.getElementById('dropzone-title');
+      const dropzoneSubtitle = document.getElementById('dropzone-subtitle');
+      const fileInput = document.getElementById('file-input');
+      const fileList = document.getElementById('file-list');
+      const btnLoadSample = document.getElementById('btn-load-sample');
+      const btnSampleLabel = document.getElementById('btn-sample-label');
+      const validationError = document.getElementById('validation-error');
+      const validationErrorMsg = document.getElementById('validation-error-msg');
       const sectionSchema = document.getElementById('section-schema');
       const schemaPills = document.getElementById('schema-pills');
       const schemaTitle = document.getElementById('schema-count-title');
       const activeColumnsMetric = document.getElementById('active-columns-metric');
       const btnResetSchema = document.getElementById('btn-reset-schema');
       const btnSubmit = document.getElementById('btn-submit');
-      const btnSubmitText = document.getElementById('btn-submit-text');
       const copySnippetBtn = document.getElementById('copy-snippet-btn');
       const copyBtnText = document.getElementById('copy-btn-text');
-      const validationError = document.getElementById('validation-error');
-      const validationErrorMsg = document.getElementById('validation-error-msg');
 
-      // Table DOM Elements
+      // View 2 Table DOM
+      const viewSetup = document.getElementById('view-setup');
+      const viewTable = document.getElementById('view-table');
       const btnBackConfig = document.getElementById('btn-back-config');
       const btnExportCsv = document.getElementById('btn-export-csv');
       const btnExportJson = document.getElementById('btn-export-json');
@@ -501,6 +838,41 @@
       const btnToggleInteractions = document.getElementById('btn-toggle-interactions');
       const tableBody = document.getElementById('table-body');
       const rowsPerPageSelect = document.getElementById('rows-per-page-select');
+
+      // Platform Tabs Event Listeners
+      const platformButtons = document.querySelectorAll('.platform-tab');
+      platformButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const plat = btn.getAttribute('data-platform');
+          if (!plat || !PLATFORM_CONFIG[plat]) return;
+          
+          activePlatform = plat;
+          platformButtons.forEach(b => {
+            b.classList.remove('active', 'border-primary', 'bg-surface-container-high');
+            b.classList.add('border-outline-variant/30', 'bg-surface-container-low');
+            const titleSpan = b.querySelector('.font-label-sm');
+            if (titleSpan) {
+              titleSpan.classList.remove('text-primary');
+              titleSpan.classList.add('text-on-surface-variant');
+            }
+          });
+
+          btn.classList.add('active', 'border-primary', 'bg-surface-container-high');
+          btn.classList.remove('border-outline-variant/30', 'bg-surface-container-low');
+          const activeTitle = btn.querySelector('.font-label-sm');
+          if (activeTitle) {
+            activeTitle.classList.add('text-primary');
+            activeTitle.classList.remove('text-on-surface-variant');
+          }
+
+          // Update Dropzone copy
+          const cfg = PLATFORM_CONFIG[plat];
+          dropzoneTitle.innerHTML = cfg.title;
+          dropzoneSubtitle.textContent = cfg.subtitle;
+          btnSampleLabel.textContent = cfg.sampleLabel;
+          copyBtnText.textContent = `Salin Snippet ${cfg.name}`;
+        });
+      });
 
       function showValidationError(message) {
         validationErrorMsg.textContent = message;
@@ -515,163 +887,9 @@
         validationError.classList.add('hidden');
       }
 
-      /**
-       * VALIDASI KETAT INPUT BERKAS JSON
-       * Mendukung response XHR SearchTimeline Twitter dan Komentar YouTube
-       */
-      function validateTwitterPayload(data) {
-        if (!data) {
-          return { valid: false, message: 'Berkas kosong atau tidak dapat diuraikan.' };
-        }
-
-        // Tipe 1: Array of objects
-        if (Array.isArray(data)) {
-          if (data.length === 0) {
-            return { valid: false, message: 'Berkas JSON berupa array kosong.' };
-          }
-
-          // Cek apakah ada minimal 1 elemen yang memiliki struktur Twitter SearchTimeline atau Komentar YouTube
-          const hasValidStructure = data.some(item => {
-            if (!item || typeof item !== 'object') return false;
-
-            // Raw response SearchTimeline Twitter (XHR Intercept)
-            const hasTimeline = !!(
-              item?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions ||
-              item?.data?.threaded_conversation_with_injections_v2 ||
-              (item?.data && typeof item?.data === 'object' && Object.keys(item.data).length > 0)
-            );
-            if (hasTimeline) return true;
-
-            // Extracted tweet object (id + full_text)
-            if (('id' in item || 'tweet_id' in item) && ('full_text' in item || 'text' in item)) {
-              return true;
-            }
-
-            // YouTube comment object (author + text)
-            if (('author' in item || 'author_name' in item) && ('text' in item || 'comment' in item)) {
-              return true;
-            }
-
-            return false;
-          });
-
-          if (!hasValidStructure) {
-            return {
-              valid: false,
-              message: 'Struktur data tidak valid. Berkas JSON harus berupa tangkapan SearchTimeline Twitter/X atau Komentar YouTube.'
-            };
-          }
-
-          return { valid: true };
-        }
-
-        // Tipe 2: Objek tunggal respons Twitter
-        if (typeof data === 'object') {
-          const hasTimeline = !!(
-            data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions ||
-            data?.data?.threaded_conversation_with_injections_v2
-          );
-          if (hasTimeline) {
-            return { valid: true };
-          }
-          return {
-            valid: false,
-            message: 'Objek JSON tidak memiliki kunci payload SearchTimeline Twitter (data.search_by_raw_query.search_timeline).'
-          };
-        }
-
-        return { valid: false, message: 'Format data bukan array atau objek JSON yang sesuai.' };
-      }
-
-      // Render Schema Pills
-      function renderSchema() {
-        schemaPills.innerHTML = '';
-        activeColumns.forEach(col => {
-          const chip = document.createElement('div');
-          chip.className = 'flex items-center gap-1.5 px-2.5 py-1 bg-surface-container hover:bg-surface-container-high rounded text-on-surface font-code-inline text-xs transition-colors shadow-sm group';
-          chip.innerHTML = `
-            <span>${col}</span>
-            <button type="button" data-col="${col}" class="w-3.5 h-3.5 rounded flex items-center justify-center text-outline group-hover:text-on-surface-variant hover:!text-error hover:bg-error-container/20 transition-colors ml-0.5">
-              <span class="material-symbols-outlined text-[12px] pointer-events-none">close</span>
-            </button>
-          `;
-          chip.querySelector('button').addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (activeColumns.length <= 1) {
-              alert('Minimal 1 kolom harus diikutsertakan.');
-              return;
-            }
-            activeColumns = activeColumns.filter(c => c !== col);
-            renderSchema();
-          });
-          schemaPills.appendChild(chip);
-        });
-        schemaTitle.textContent = `Skema Kolom Terdeteksi (${activeColumns.length} Kolom)`;
-        activeColumnsMetric.textContent = `${activeColumns.length} / ${defaultColumns.length} kolom diikutsertakan`;
-      }
-
-      btnResetSchema.addEventListener('click', () => {
-        activeColumns = [...defaultColumns];
-        renderSchema();
-      });
-
-      // Update Staged Files UI & Kontrol Tampilan Skema
-      function updateInterfaceState() {
-        fileList.innerHTML = '';
-        stagedFiles.forEach((file, idx) => {
-          const item = document.createElement('div');
-          item.className = 'file-item flex items-center justify-between px-3.5 py-2.5 bg-surface-container rounded-lg border border-outline-variant/30';
-          const sizeKb = (file.size / 1024).toFixed(1);
-          let badgeText = 'Valid SearchTimeline';
-          let iconName = 'data_object';
-          if (file.fileType === 'html_twitter') {
-            badgeText = `Valid Twitter HTML (${file.count || file.data.length} tweets)`;
-            iconName = 'code';
-          } else if (file.fileType === 'html_threads') {
-            badgeText = `Valid Threads HTML (${file.count || file.data.length} posts)`;
-            iconName = 'forum';
-          } else if (file.fileType === 'html_youtube') {
-            badgeText = `Valid YouTube HTML (${file.count || file.data.length} komentar)`;
-            iconName = 'comment';
-          } else if (file.fileType === 'json_tweets') {
-            badgeText = `Valid Dataset (${file.count || file.data.length} items)`;
-          }
-
-          item.innerHTML = `
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="material-symbols-outlined text-primary text-lg">${iconName}</span>
-              <div class="flex items-baseline gap-2 min-w-0">
-                <span class="font-code-inline text-xs text-on-surface truncate">${file.name}</span>
-                <span class="font-meta-numeric text-xs text-outline">&bull;</span>
-                <span class="font-meta-numeric text-xs text-on-surface-variant">${sizeKb} KB</span>
-                <span class="font-meta-numeric text-xs text-outline">&bull;</span>
-                <span class="font-meta-numeric text-xs text-tertiary">${badgeText}</span>
-              </div>
-            </div>
-            <button type="button" class="w-6 h-6 rounded flex items-center justify-center text-outline hover:text-error hover:bg-error-container/20 transition-colors" title="Hapus file">
-              <span class="material-symbols-outlined text-sm">close</span>
-            </button>
-          `;
-          item.querySelector('button').addEventListener('click', () => {
-            stagedFiles.splice(idx, 1);
-            updateInterfaceState();
-          });
-          fileList.appendChild(item);
-        });
-
-        // ATURAN: Skema Kolom Terdeteksi HANYA MUNCUL setelah ada input file
-        if (stagedFiles.length > 0) {
-          sectionSchema.classList.remove('hidden');
-          renderSchema();
-        } else {
-          sectionSchema.classList.add('hidden');
-        }
-      }
-
-      // HTML Parser Helper for Twitter / X
       function parseMetricNumber(str) {
         if (!str) return 0;
-        const clean = str.toLowerCase().replace(/\s+/g, '');
+        const clean = String(str).toLowerCase().replace(/\s+/g, '');
         let mult = 1;
         if (clean.includes('rb') || clean.includes('k')) mult = 1000;
         else if (clean.includes('jt') || clean.includes('m')) mult = 1000000;
@@ -679,6 +897,7 @@
         return Math.round((parseFloat(num) || 0) * mult);
       }
 
+      // Twitter / X HTML Parser
       function extractTweetsFromXHtmlText(htmlContent) {
         const tweets = [];
         const seenIds = new Set();
@@ -724,9 +943,8 @@
           }
 
           if (!full_text) continue;
-
           if (!tweetId) {
-            tweetId = `x_${username}_${full_text.substring(0, 20)}`.replace(/\s+/g, '_');
+            tweetId = `x_${username}_${full_text.substring(0, 16)}`.replace(/\s+/g, '_');
           }
           if (seenIds.has(tweetId)) continue;
           seenIds.add(tweetId);
@@ -765,6 +983,7 @@
         return tweets;
       }
 
+      // YouTube Comments Parser
       function extractYouTubeCommentsFromHtmlText(htmlContent) {
         const comments = [];
         const blocks = htmlContent.split(/<ytd-comment-view-model\b/i);
@@ -798,7 +1017,6 @@
             if (numMatch) likes = parseMetricNumber(numMatch[1]);
           }
 
-          const isPinned = block.includes('id="pinned-comment-badge"') && block.includes('ytw-pinned-comment-badge-renderer');
           if (!commentId) commentId = `yt_${i}_${Date.now()}`;
 
           comments.push({
@@ -807,13 +1025,13 @@
             author_url: author ? `https://www.youtube.com/${author}` : '',
             text: rawText,
             likes: likes,
-            published_time: publishedTime,
-            is_pinned: isPinned
+            published_time: publishedTime
           });
         }
         return comments;
       }
 
+      // Threads Timeline Parser
       function extractThreadsFromHtmlText(htmlContent) {
         const posts = [];
         const seenIds = new Set();
@@ -888,6 +1106,190 @@
         return posts;
       }
 
+      // TikTok Comments Parser
+      function extractTikTokCommentsFromHtmlText(htmlContent) {
+        const comments = [];
+        const blocks = htmlContent.split(/DivCommentItemWrapper/i);
+        for (let i = 1; i < blocks.length; i++) {
+          const b = blocks[i];
+          const uMatch = b.match(/href="\/@([^"]+)"/i);
+          const tMatch = b.match(/data-e2e="comment-level-\d"[^>]*>([\s\S]*?)<\/span>/i);
+          const lMatch = b.match(/aria-label="[^"]*?([\d.,KkMmbjt]+)\s*likes"/i) || b.match(/>([\d.,KkMmbjt]+)<\/span><\/div>/i);
+          const dateMatch = b.match(/TUXText[^>]*>(\d{1,2}-\d{1,2})<\/span>/i);
+
+          const username = uMatch ? `@${uMatch[1]}` : '';
+          const text = tMatch ? tMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+          const likes = lMatch ? parseMetricNumber(lMatch[1]) : 0;
+          const createdAt = dateMatch ? dateMatch[1] : '';
+
+          if (text || username) {
+            comments.push({
+              id: `tiktok_${i}_${Date.now()}`,
+              full_text: text,
+              created_at: createdAt,
+              username: username,
+              user_name: username.replace('@', ''),
+              likes: likes,
+              retweets: 0,
+              replies: 0,
+              views: 0,
+              tweet_url: username ? `https://www.tiktok.com/${username}` : ''
+            });
+          }
+        }
+        return comments;
+      }
+
+      // Shopee Reviews Parser
+      function extractShopeeReviewsFromHtmlText(htmlContent) {
+        const reviews = [];
+        const blocks = htmlContent.split(/class="q2b7Oq"/i);
+        for (let i = 1; i < blocks.length; i++) {
+          const b = blocks[i];
+          const uMatch = b.match(/class="InK5kS">([^<]+)<\/div>/i) || b.match(/class="InK5kS"[^>]*>([^<]+)<\/a>/i);
+          const tMatch = b.match(/class="YNedDV">([\s\S]*?)<\/div>/i);
+          const dMatch = b.match(/class="XYk98l">([^<]+)<\/div>/i);
+          const lMatch = b.match(/class="shopee-product-rating__like-count">(\d+)<\/div>/i);
+          const cmtIdMatch = b.match(/data-cmtid="(\d+)"/i);
+
+          const username = uMatch ? uMatch[1].trim() : '';
+          const text = tMatch ? tMatch[1].replace(/<[^>]+>/g, '').trim() : '';
+          const variantDate = dMatch ? dMatch[1].trim() : '';
+          const likes = lMatch ? parseInt(lMatch[1], 10) : 0;
+          const reviewId = cmtIdMatch ? cmtIdMatch[1] : `shopee_${i}`;
+
+          if (text || username) {
+            reviews.push({
+              id: reviewId,
+              full_text: text,
+              created_at: variantDate,
+              username: username,
+              user_name: username,
+              likes: likes,
+              retweets: 0,
+              replies: 0,
+              views: 0,
+              tweet_url: ''
+            });
+          }
+        }
+        return reviews;
+      }
+
+      function validateTwitterPayload(data) {
+        if (!data) return { valid: false, message: 'Berkas kosong atau tidak dapat diuraikan.' };
+        if (Array.isArray(data)) {
+          if (data.length === 0) return { valid: false, message: 'Berkas JSON berupa array kosong.' };
+          const hasValid = data.some(item => {
+            if (!item || typeof item !== 'object') return false;
+            return !!(
+              item?.data?.search_by_raw_query?.search_timeline ||
+              item?.data?.threaded_conversation_with_injections_v2 ||
+              ('id' in item && ('full_text' in item || 'text' in item)) ||
+              ('author' in item && ('text' in item || 'comment' in item))
+            );
+          });
+          if (!hasValid) return { valid: false, message: 'Struktur data JSON tidak memiliki atribut tweet atau komentar yang sesuai.' };
+          return { valid: true };
+        }
+        if (typeof data === 'object') {
+          if (data?.data?.search_by_raw_query?.search_timeline || data?.data?.threaded_conversation_with_injections_v2) {
+            return { valid: true };
+          }
+          return { valid: false, message: 'Objek JSON tidak memiliki payload SearchTimeline Twitter yang valid.' };
+        }
+        return { valid: false, message: 'Format data bukan array atau objek JSON valid.' };
+      }
+
+      function renderSchema() {
+        schemaPills.innerHTML = '';
+        activeColumns.forEach(col => {
+          const chip = document.createElement('div');
+          chip.className = 'flex items-center gap-1.5 px-2.5 py-1 bg-surface-container hover:bg-surface-container-high rounded text-on-surface font-code-inline text-xs transition-colors shadow-sm group';
+          chip.innerHTML = `
+            <span>${col}</span>
+            <button type="button" data-col="${col}" class="w-3.5 h-3.5 rounded flex items-center justify-center text-outline group-hover:text-on-surface-variant hover:!text-error hover:bg-error-container/20 transition-colors ml-0.5">
+              <span class="material-symbols-outlined text-[12px] pointer-events-none">close</span>
+            </button>
+          `;
+          chip.querySelector('button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (activeColumns.length <= 1) {
+              alert('Minimal 1 kolom harus diikutsertakan.');
+              return;
+            }
+            activeColumns = activeColumns.filter(c => c !== col);
+            renderSchema();
+          });
+          schemaPills.appendChild(chip);
+        });
+        schemaTitle.textContent = `Skema Kolom Terdeteksi (${activeColumns.length} Kolom)`;
+        activeColumnsMetric.textContent = `${activeColumns.length} / ${defaultColumns.length} kolom diikutsertakan`;
+      }
+
+      btnResetSchema.addEventListener('click', () => {
+        activeColumns = [...defaultColumns];
+        renderSchema();
+      });
+
+      function updateInterfaceState() {
+        fileList.innerHTML = '';
+        stagedFiles.forEach((file, idx) => {
+          const item = document.createElement('div');
+          item.className = 'file-item flex items-center justify-between px-3.5 py-2.5 bg-surface-container rounded-lg border border-outline-variant/30';
+          const sizeKb = (file.size / 1024).toFixed(1);
+          let badgeText = 'Valid SearchTimeline';
+          let iconName = 'data_object';
+          if (file.fileType === 'html_twitter') {
+            badgeText = `Valid Twitter HTML (${file.count || file.data.length} tweets)`;
+            iconName = 'code';
+          } else if (file.fileType === 'html_threads') {
+            badgeText = `Valid Threads HTML (${file.count || file.data.length} posts)`;
+            iconName = 'forum';
+          } else if (file.fileType === 'html_youtube') {
+            badgeText = `Valid YouTube HTML (${file.count || file.data.length} komentar)`;
+            iconName = 'comment';
+          } else if (file.fileType === 'html_tiktok') {
+            badgeText = `Valid TikTok HTML (${file.count || file.data.length} komentar)`;
+            iconName = 'video_library';
+          } else if (file.fileType === 'html_shopee') {
+            badgeText = `Valid Shopee HTML (${file.count || file.data.length} ulasan)`;
+            iconName = 'shopping_bag';
+          } else if (file.fileType === 'json_tweets') {
+            badgeText = `Valid Dataset (${file.count || file.data.length} items)`;
+          }
+
+          item.innerHTML = `
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="material-symbols-outlined text-primary text-lg">${iconName}</span>
+              <div class="flex items-baseline gap-2 min-w-0">
+                <span class="font-code-inline text-xs text-on-surface truncate">${file.name}</span>
+                <span class="font-meta-numeric text-xs text-outline">&bull;</span>
+                <span class="font-meta-numeric text-xs text-on-surface-variant">${sizeKb} KB</span>
+                <span class="font-meta-numeric text-xs text-outline">&bull;</span>
+                <span class="font-meta-numeric text-xs text-tertiary">${badgeText}</span>
+              </div>
+            </div>
+            <button type="button" class="w-6 h-6 rounded flex items-center justify-center text-outline hover:text-error hover:bg-error-container/20 transition-colors" title="Hapus file">
+              <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+          `;
+          item.querySelector('button').addEventListener('click', () => {
+            stagedFiles.splice(idx, 1);
+            updateInterfaceState();
+          });
+          fileList.appendChild(item);
+        });
+
+        // Skema kolom hanya tampil jika ada file
+        if (stagedFiles.length > 0) {
+          sectionSchema.classList.remove('hidden');
+          renderSchema();
+        } else {
+          sectionSchema.classList.add('hidden');
+        }
+      }
+
       function handleFilesAddition(files) {
         hideValidationError();
         let invalidCount = 0;
@@ -909,57 +1311,48 @@
             const textContent = evt.target.result;
 
             if (isHtml) {
-              // Deteksi Twitter, Threads, atau YouTube HTML
               if (textContent.includes('/post/') || textContent.includes('threads.net')) {
                 const posts = extractThreadsFromHtmlText(textContent);
                 if (posts.length === 0) {
-                  showValidationError(`Berkas HTML "${file.name}" tidak memuat elemen postingan Threads yang valid.`);
+                  showValidationError(`Berkas HTML "${file.name}" tidak memuat elemen Threads yang valid.`);
                   return;
                 }
-                if (!stagedFiles.some(f => f.name === file.name && f.size === file.size)) {
-                  stagedFiles.push({
-                    name: file.name,
-                    size: file.size,
-                    fileType: 'html_threads',
-                    count: posts.length,
-                    data: posts
-                  });
-                  updateInterfaceState();
-                }
-              } else if (textContent.includes('<article') || textContent.includes('x.com') || textContent.includes('timeline-search')) {
-                const tweets = extractTweetsFromXHtmlText(textContent);
-                if (tweets.length === 0) {
-                  showValidationError(`Berkas HTML "${file.name}" tidak memuat elemen <article> tweet Twitter/X yang valid.`);
+                stagedFiles.push({ name: file.name, size: file.size, fileType: 'html_threads', count: posts.length, data: posts });
+                updateInterfaceState();
+              } else if (textContent.includes('DivCommentItemWrapper') || textContent.includes('comment-level-')) {
+                const comments = extractTikTokCommentsFromHtmlText(textContent);
+                if (comments.length === 0) {
+                  showValidationError(`Berkas HTML "${file.name}" tidak memuat komentar TikTok yang valid.`);
                   return;
                 }
-                if (!stagedFiles.some(f => f.name === file.name && f.size === file.size)) {
-                  stagedFiles.push({
-                    name: file.name,
-                    size: file.size,
-                    fileType: 'html_twitter',
-                    count: tweets.length,
-                    data: tweets
-                  });
-                  updateInterfaceState();
+                stagedFiles.push({ name: file.name, size: file.size, fileType: 'html_tiktok', count: comments.length, data: comments });
+                updateInterfaceState();
+              } else if (textContent.includes('shopee-product-comment-list') || textContent.includes('q2b7Oq')) {
+                const reviews = extractShopeeReviewsFromHtmlText(textContent);
+                if (reviews.length === 0) {
+                  showValidationError(`Berkas HTML "${file.name}" tidak memuat ulasan Shopee yang valid.`);
+                  return;
                 }
+                stagedFiles.push({ name: file.name, size: file.size, fileType: 'html_shopee', count: reviews.length, data: reviews });
+                updateInterfaceState();
               } else if (textContent.includes('ytd-comment') || textContent.includes('ytd-comment-view-model')) {
                 const comments = extractYouTubeCommentsFromHtmlText(textContent);
                 if (comments.length === 0) {
-                  showValidationError(`Berkas HTML "${file.name}" tidak memuat elemen komentar YouTube yang valid.`);
+                  showValidationError(`Berkas HTML "${file.name}" tidak memuat komentar YouTube yang valid.`);
                   return;
                 }
-                if (!stagedFiles.some(f => f.name === file.name && f.size === file.size)) {
-                  stagedFiles.push({
-                    name: file.name,
-                    size: file.size,
-                    fileType: 'html_youtube',
-                    count: comments.length,
-                    data: comments
-                  });
-                  updateInterfaceState();
+                stagedFiles.push({ name: file.name, size: file.size, fileType: 'html_youtube', count: comments.length, data: comments });
+                updateInterfaceState();
+              } else if (textContent.includes('<article') || textContent.includes('x.com') || textContent.includes('timeline-search')) {
+                const tweets = extractTweetsFromXHtmlText(textContent);
+                if (tweets.length === 0) {
+                  showValidationError(`Berkas HTML "${file.name}" tidak memuat tweet Twitter/X yang valid.`);
+                  return;
                 }
+                stagedFiles.push({ name: file.name, size: file.size, fileType: 'html_twitter', count: tweets.length, data: tweets });
+                updateInterfaceState();
               } else {
-                showValidationError(`Berkas HTML "${file.name}" bukan format dokumen Twitter, Threads, atau YouTube yang dikenali.`);
+                showValidationError(`Berkas HTML "${file.name}" tidak dikenali sebagai format X, Threads, YouTube, TikTok, atau Shopee.`);
               }
               return;
             }
@@ -975,23 +1368,15 @@
 
               let fileType = 'json_timeline';
               let count = 0;
-              if (Array.isArray(jsonContent) && jsonContent.length > 0 && jsonContent[0].id && jsonContent[0].full_text) {
+              if (Array.isArray(jsonContent) && jsonContent.length > 0 && jsonContent[0].id && (jsonContent[0].full_text || jsonContent[0].text)) {
                 fileType = 'json_tweets';
                 count = jsonContent.length;
               }
 
-              if (!stagedFiles.some(f => f.name === file.name && f.size === file.size)) {
-                stagedFiles.push({
-                  name: file.name,
-                  size: file.size,
-                  fileType: fileType,
-                  count: count,
-                  data: jsonContent
-                });
-                updateInterfaceState();
-              }
+              stagedFiles.push({ name: file.name, size: file.size, fileType: fileType, count: count, data: jsonContent });
+              updateInterfaceState();
             } catch (err) {
-              showValidationError(`Berkas "${file.name}" rusak atau bukan format JSON valid: ${err.message}`);
+              showValidationError(`Berkas "${file.name}" bukan JSON yang valid: ${err.message}`);
             }
           };
           reader.readAsText(file);
@@ -1002,388 +1387,313 @@
         }
       }
 
-      // Handle File Input Selection
+      // Drag & Drop
       fileInput.addEventListener('change', (e) => {
         handleFilesAddition(e.target.files);
         fileInput.value = '';
       });
-
-      // Drag & Drop
       dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('border-primary'); });
       dropzone.addEventListener('dragleave', () => { dropzone.classList.remove('border-primary'); });
       dropzone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropzone.classList.remove('border-primary');
-        if (e.dataTransfer.files) {
-          handleFilesAddition(e.dataTransfer.files);
+        if (e.dataTransfer.files) handleFilesAddition(e.dataTransfer.files);
+      });
+
+      // Quick Bone Sample Loader
+      btnLoadSample.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        hideValidationError();
+        const cfg = PLATFORM_CONFIG[activePlatform] || PLATFORM_CONFIG.twitter;
+        
+        try {
+          const res = await fetch(cfg.sampleFile);
+          if (!res.ok) throw new Error('File sampel tidak dapat diakses langsung via network.');
+          const text = await res.text();
+          
+          let parsedData = [];
+          if (cfg.fileType === 'html_twitter') parsedData = extractTweetsFromXHtmlText(text);
+          else if (cfg.fileType === 'html_youtube') parsedData = extractYouTubeCommentsFromHtmlText(text);
+          else if (cfg.fileType === 'html_threads') parsedData = extractThreadsFromHtmlText(text);
+          else if (cfg.fileType === 'html_tiktok') parsedData = extractTikTokCommentsFromHtmlText(text);
+          else if (cfg.fileType === 'html_shopee') parsedData = extractShopeeReviewsFromHtmlText(text);
+
+          stagedFiles.push({
+            name: cfg.sampleFile.split('/').pop(),
+            size: text.length,
+            fileType: cfg.fileType,
+            count: parsedData.length,
+            data: parsedData
+          });
+          updateInterfaceState();
+        } catch (err) {
+          // Fallback dataset jika dibuka via file:///
+          let fallbackData = [];
+          if (activePlatform === 'twitter') {
+            fallbackData = [
+              { id: '1859871234567890123', full_text: 'Menganalisis sentimen AI untuk skripsi metopen menggunakan scraping client-side.', created_at: '2026-11-24T08:00:00Z', username: '@ev_zahri', user_name: 'Zahri Info', likes: 142, retweets: 28, replies: 12, views: 3200, tweet_url: 'https://x.com/ev_zahri/status/1859871234567890123' },
+              { id: '1859871234567890124', full_text: 'Slogan baru: Need data? Scrape it. Pure client-side tanpa backend python.', created_at: '2026-11-24T08:15:00Z', username: '@antigravity_dev', user_name: 'Dev System', likes: 350, retweets: 89, replies: 44, views: 9800, tweet_url: 'https://x.com' }
+            ];
+          } else if (activePlatform === 'youtube') {
+            fallbackData = [
+              { id: 'yt_1', full_text: 'Penjelasan metopen scraping ini sangat jelas dan aplikatif!', created_at: '2 hari lalu', username: '@mahasiswa_it', user_name: 'Mahasiswa IT', likes: 85, retweets: 0, replies: 2, views: 85, tweet_url: '' },
+              { id: 'yt_2', full_text: 'Apakah dataset ini bisa diexport ke CSV langsung? Keren!', created_at: '1 hari lalu', username: '@skripsian', user_name: 'Skripsian', likes: 42, retweets: 0, replies: 1, views: 42, tweet_url: '' }
+            ];
+          } else {
+            fallbackData = [
+              { id: 'item_sample_1', full_text: `Data sampel demonstrasi untuk ${cfg.name}. Siap diolah ke CSV.`, created_at: 'Baru saja', username: '@researcher', user_name: 'Researcher', likes: 99, retweets: 15, replies: 4, views: 1200, tweet_url: '' }
+            ];
+          }
+
+          stagedFiles.push({
+            name: `${activePlatform}_sample_bone.json`,
+            size: 2048,
+            fileType: 'json_tweets',
+            count: fallbackData.length,
+            data: fallbackData
+          });
+          updateInterfaceState();
         }
       });
 
-      // Copy Snippet
-      const jsSnippet = `let responseCount = 0; let allResponses = []; window.saveTwitterData = function() { if (allResponses.length === 0) return console.log('❌ Kosong'); const blob = new Blob([JSON.stringify(allResponses, null, 2)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'twitter_bulk_responses.json'; a.click(); }; window.stopCapture = function() { window.saveTwitterData(); console.log('🛑 Selesai: ' + responseCount); }; (function() { const origOpen = XMLHttpRequest.prototype.open; const origSend = XMLHttpRequest.prototype.send; XMLHttpRequest.prototype.open = function(m, u) { this._url = u; return origOpen.apply(this, arguments); }; XMLHttpRequest.prototype.send = function() { this.addEventListener('load', function() { if (this._url && this._url.includes('SearchTimeline') && this.status === 200) { try { allResponses.push(JSON.parse(this.responseText)); responseCount++; console.log('✅ Response #' + responseCount); } catch (e) {} } }); return origSend.apply(this, arguments); }; })(); console.log('🎯 Siap! Scroll feed lalu ketik stopCapture()');`;
-
+      // Salin Snippet
       copySnippetBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(jsSnippet).then(() => {
+        const cfg = PLATFORM_CONFIG[activePlatform] || PLATFORM_CONFIG.twitter;
+        navigator.clipboard.writeText(cfg.snippet).then(() => {
           copyBtnText.textContent = 'Tersalin!';
-          setTimeout(() => { copyBtnText.textContent = 'Salin Snippet'; }, 2000);
+          setTimeout(() => {
+            copyBtnText.textContent = `Salin Snippet ${cfg.name}`;
+          }, 2000);
         });
       });
 
-      // Client-side extraction engine identical to extract_bulk.py & combine_json.py
-      function extractTweetsFromResponse(data) {
-        const tweets = [];
-        try {
-          const instructions = data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions || [];
-          for (const instr of instructions) {
-            if (instr?.type === 'TimelineAddEntries') {
-              const entries = instr?.entries || [];
-              for (const entry of entries) {
-                const entryId = entry?.entryId || '';
-                if (entryId.startsWith('tweet-')) {
-                  try {
-                    const tweetResults = entry?.content?.itemContent?.tweet_results?.result;
-                    if (!tweetResults) continue;
-                    const legacy = tweetResults.legacy || {};
-                    const userCore = tweetResults.core?.user_results?.result?.core || {};
-                    const username = userCore.screen_name || '';
-                    const userName = userCore.name || '';
-                    const tweetId = legacy.id_str || '';
-                    tweets.push({
-                      id: tweetId,
-                      full_text: legacy.full_text || '',
-                      created_at: legacy.created_at || '',
-                      username: username,
-                      user_name: userName,
-                      likes: legacy.favorite_count || 0,
-                      retweets: legacy.retweet_count || 0,
-                      replies: legacy.reply_count || 0,
-                      views: tweetResults.views?.count || '0',
-                      tweet_url: (username && tweetId) ? `https://twitter.com/${username}/status/${tweetId}` : ''
-                    });
-                  } catch (e) {
-                    continue;
-                  }
-                }
-              }
-            }
-          }
-        } catch (e) {}
-        return tweets;
-      }
-
-      function extractTweetsClientSide(payloads) {
-        const allTweets = [];
-        for (const payload of payloads) {
-          if (Array.isArray(payload)) {
-            for (const item of payload) {
-              if (item && typeof item === 'object') {
-                if (item.data) {
-                  allTweets.push(...extractTweetsFromResponse(item));
-                } else if (item.id && item.full_text) {
-                  allTweets.push(item);
-                } else if (item.author && item.text) {
-                  // YouTube Comment format
-                  allTweets.push({
-                    id: item.id || `yt_${allTweets.length + 1}`,
-                    full_text: item.text,
-                    created_at: item.published_time || '',
-                    username: item.author,
-                    user_name: item.author.replace('@', ''),
-                    likes: item.likes || 0,
-                    retweets: 0,
-                    replies: item.is_pinned ? 1 : 0,
-                    views: item.likes || '0',
-                    tweet_url: item.author_url || item.video_url || ''
-                  });
-                } else {
-                  allTweets.push(...extractTweetsFromResponse(item));
-                }
-              }
-            }
-          } else if (payload && typeof payload === 'object') {
-            allTweets.push(...extractTweetsFromResponse(payload));
-          }
-        }
-        return removeDuplicates(allTweets);
-      }
-
-      function removeDuplicates(tweets) {
-        const seenIds = new Set();
-        const unique = [];
-        for (const t of tweets) {
-          const id = t.id;
-          if (id && !seenIds.has(id)) {
-            seenIds.add(id);
-            unique.push(t);
-          }
-        }
-        return unique;
-      }
-
-      // Submit and Parse Payload
-      btnSubmit.addEventListener('click', async () => {
+      // Submit Action -> Render View 2 (Table)
+      btnSubmit.addEventListener('click', () => {
         if (stagedFiles.length === 0) {
-          showValidationError('Silakan pilih atau tarik berkas .json hasil scraping Twitter terlebih dahulu.');
+          showValidationError('Silakan unggah atau muat minimal satu berkas sebelum submit.');
           return;
         }
 
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<span class="material-symbols-outlined text-base animate-spin">progress_activity</span><span>Mengurai Payload...</span>';
-
-        try {
-          const combinedPayloads = stagedFiles.map(f => f.data);
-          // Ekstraksi langsung di browser menggunakan engine yang identik dengan extract_bulk.py & combine_json.py
-          const extractedResult = extractTweetsClientSide(combinedPayloads);
-
-          parsedTweets = extractedResult || [];
-          if (parsedTweets.length === 0) {
-            showValidationError('Tidak ada tweet yang berhasil diekstrak. Pastikan berkas JSON berisi respon SearchTimeline yang valid.');
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = '<span class="material-symbols-outlined text-base">table_view</span><span>Muat Data ke Tabel (Submit)</span><span class="font-code-inline text-xs ml-1 opacity-70">↵</span>';
-            return;
+        extractedDataset = [];
+        stagedFiles.forEach(file => {
+          if (Array.isArray(file.data)) {
+            file.data.forEach(item => {
+              if (item.author && item.text) {
+                extractedDataset.push({
+                  id: item.id || `yt_${extractedDataset.length + 1}`,
+                  full_text: item.text,
+                  created_at: item.published_time || '',
+                  username: item.author,
+                  user_name: item.author.replace('@', ''),
+                  likes: item.likes || 0,
+                  retweets: 0,
+                  replies: 0,
+                  views: item.likes || '0',
+                  tweet_url: item.author_url || ''
+                });
+              } else {
+                extractedDataset.push({
+                  id: item.id || `rec_${extractedDataset.length + 1}`,
+                  full_text: item.full_text || item.text || '',
+                  created_at: item.created_at || '',
+                  username: item.username || '',
+                  user_name: item.user_name || item.username || '',
+                  likes: item.likes || 0,
+                  retweets: item.retweets || 0,
+                  replies: item.replies || 0,
+                  views: item.views || 0,
+                  tweet_url: item.tweet_url || ''
+                });
+              }
+            });
           }
+        });
 
-          // Transition to View 2
-          viewSetup.classList.add('hidden');
-          viewTable.classList.remove('hidden');
-
-          // Initialize Table View
-          initTableView();
-        } catch (err) {
-          showValidationError('Terjadi kesalahan saat memproses data: ' + err.message);
-          btnSubmit.disabled = false;
-          btnSubmit.innerHTML = '<span class="material-symbols-outlined text-base">table_view</span><span>Muat Data ke Tabel (Submit)</span><span class="font-code-inline text-xs ml-1 opacity-70">↵</span>';
-        }
+        // Switch Views
+        viewSetup.classList.add('hidden');
+        viewTable.classList.remove('hidden');
+        document.getElementById('table-view-title').textContent = `Dataset Hasil Ekstraksi (${PLATFORM_CONFIG[activePlatform].name})`;
+        applyTableFiltersAndRender();
+        viewTable.scrollIntoView({ behavior: 'smooth' });
       });
 
-      // Back to Configuration
+      // Back to Config Button
       btnBackConfig.addEventListener('click', () => {
         viewTable.classList.add('hidden');
         viewSetup.classList.remove('hidden');
-        btnSubmit.disabled = false;
-        btnSubmit.innerHTML = '<span class="material-symbols-outlined text-base">table_view</span><span>Muat Data ke Tabel (Submit)</span><span class="font-code-inline text-xs ml-1 opacity-70">↵</span>';
+        viewSetup.scrollIntoView({ behavior: 'smooth' });
       });
 
-      // Initialize Table View with Real Metrics & Rows
-      function initTableView() {
-        document.getElementById('header-col-count').textContent = `${activeColumns.length} Kolom Aktif`;
-        document.getElementById('header-desc').textContent = `Menampilkan ${parsedTweets.length.toLocaleString()} tweet hasil ekstraksi gabungan ${stagedFiles.length} file payload.`;
-
-        // Calculate Real Metrics
-        const total = parsedTweets.length;
-        const authors = new Set(parsedTweets.map(t => t.username).filter(Boolean));
-        const uniqueAuthorsCount = authors.size;
-        const density = total > 0 ? ((uniqueAuthorsCount / total) * 100).toFixed(1) : 0;
-
-        let totalInteractions = 0;
-        parsedTweets.forEach(t => {
-          totalInteractions += (Number(t.likes) || 0) + (Number(t.retweets) || 0) + (Number(t.replies) || 0);
-        });
-        const avgInteraction = total > 0 ? (totalInteractions / total).toFixed(1) : 0;
-
-        // Metric Values
-        document.getElementById('metric-total-tweets').textContent = total.toLocaleString();
-        document.getElementById('metric-unique-authors').textContent = uniqueAuthorsCount.toLocaleString();
-        document.getElementById('metric-density').textContent = `${density}% density`;
-        document.getElementById('metric-total-interactions').textContent = totalInteractions.toLocaleString();
-        document.getElementById('metric-avg-interaction').textContent = `${avgInteraction} / tweet`;
-
-        // Time Range
-        const dates = parsedTweets.map(t => t.created_at).filter(Boolean);
-        if (dates.length > 0) {
-          document.getElementById('metric-time-range').textContent = `${dates.length} Recorded`;
-        }
-
-        // Apply filters & render
-        applyFiltersAndRender();
-      }
-
-      function applyFiltersAndRender() {
+      // Table Filtering & Sorting
+      function applyTableFiltersAndRender() {
         const query = (tableSearchInput.value || '').toLowerCase().trim();
-        const sortVal = tableSortSelect.value;
+        const sortMode = tableSortSelect.value;
 
-        filteredTweets = parsedTweets.filter(t => {
-          if (filterOnlyInteractions) {
-            const sum = (Number(t.likes) || 0) + (Number(t.retweets) || 0) + (Number(t.replies) || 0);
-            if (sum === 0) return false;
+        currentFilteredData = extractedDataset.filter(item => {
+          if (filterOnlyInteractions && (item.likes + item.retweets + item.replies === 0)) {
+            return false;
           }
           if (!query) return true;
           return (
-            (t.full_text && t.full_text.toLowerCase().includes(query)) ||
-            (t.username && t.username.toLowerCase().includes(query)) ||
-            (t.id && String(t.id).includes(query))
+            (item.full_text && item.full_text.toLowerCase().includes(query)) ||
+            (item.username && item.username.toLowerCase().includes(query)) ||
+            (item.user_name && item.user_name.toLowerCase().includes(query)) ||
+            (item.id && String(item.id).toLowerCase().includes(query))
           );
         });
 
-        // Sorting
-        if (sortVal === 'likes') {
-          filteredTweets.sort((a, b) => (Number(b.likes) || 0) - (Number(a.likes) || 0));
-        } else if (sortVal === 'retweets') {
-          filteredTweets.sort((a, b) => (Number(b.retweets) || 0) - (Number(a.retweets) || 0));
-        } else if (sortVal === 'replies') {
-          filteredTweets.sort((a, b) => (Number(b.replies) || 0) - (Number(a.replies) || 0));
-        }
+        if (sortMode === 'likes') currentFilteredData.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+        else if (sortMode === 'retweets') currentFilteredData.sort((a, b) => (b.retweets || 0) - (a.retweets || 0));
+        else if (sortMode === 'replies') currentFilteredData.sort((a, b) => (b.replies || 0) - (a.replies || 0));
+
+        // Update Metrics
+        document.getElementById('metric-total-tweets').textContent = extractedDataset.length;
+        const uniqueAuthors = new Set(extractedDataset.map(d => d.username)).size;
+        document.getElementById('metric-unique-authors').textContent = uniqueAuthors;
+        const totalInt = extractedDataset.reduce((acc, cur) => acc + (cur.likes || 0) + (cur.retweets || 0) + (cur.replies || 0), 0);
+        document.getElementById('metric-total-interactions').textContent = totalInt.toLocaleString();
+        document.getElementById('header-col-count').textContent = `${activeColumns.length} Kolom Aktif`;
 
         currentPage = 1;
         renderTablePage();
       }
 
-      tableSearchInput.addEventListener('input', applyFiltersAndRender);
-      tableSortSelect.addEventListener('change', applyFiltersAndRender);
+      function renderTablePage() {
+        tableBody.innerHTML = '';
+        const total = currentFilteredData.length;
+        const start = (currentPage - 1) * rowsPerPage;
+        const end = Math.min(start + rowsPerPage, total);
+        const pagedData = currentFilteredData.slice(start, end);
 
+        if (pagedData.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="10" class="py-8 text-center text-outline font-body-muted">
+                Tidak ada data yang cocok dengan kriteria pencarian atau filter.
+              </td>
+            </tr>
+          `;
+        } else {
+          pagedData.forEach((row, i) => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-surface-container/50 transition-colors';
+            const rowNum = start + i + 1;
+            const linkHtml = row.tweet_url ? `<a href="${row.tweet_url}" target="_blank" class="text-primary hover:underline">${row.id}</a>` : (row.id || '-');
+
+            tr.innerHTML = `
+              <td class="px-4 py-2 text-outline font-mono text-[11px]">${rowNum}</td>
+              <td class="px-3 py-2 font-mono text-[11px] text-on-surface truncate max-w-[120px]">${linkHtml}</td>
+              <td class="px-3 py-2 font-mono text-[11px] text-on-surface-variant truncate max-w-[120px]">${row.created_at || '-'}</td>
+              <td class="px-3 py-2 font-mono text-[11px] text-primary truncate max-w-[130px]">${row.username || '-'}</td>
+              <td class="px-4 py-2 font-sans text-xs text-on-surface max-w-[340px] truncate" title="${row.full_text || ''}">${row.full_text || '-'}</td>
+              <td class="px-3 py-2 font-mono text-[11px] text-right text-on-surface-variant">${row.replies || 0}</td>
+              <td class="px-3 py-2 font-mono text-[11px] text-right text-on-surface-variant">${row.retweets || 0}</td>
+              <td class="px-3 py-2 font-mono text-[11px] text-right text-tertiary">${row.likes || 0}</td>
+              <td class="px-3 py-2 font-mono text-[11px] text-right text-on-surface-variant">${row.views || 0}</td>
+              <td class="px-4 py-2 text-center">
+                <button type="button" class="btn-inspect-json px-2 py-0.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant hover:text-primary font-mono text-[11px] transition-colors cursor-pointer" data-idx="${start + i}">
+                  JSON
+                </button>
+              </td>
+            `;
+            tableBody.appendChild(tr);
+          });
+        }
+
+        // Pagination Info
+        document.getElementById('page-range').textContent = total > 0 ? `${start + 1}-${end}` : '0-0';
+        document.getElementById('page-total').textContent = total;
+
+        // Render Pagination Controls
+        const paginationControls = document.getElementById('pagination-controls');
+        paginationControls.innerHTML = '';
+        const totalPages = Math.ceil(total / rowsPerPage) || 1;
+
+        const prevBtn = document.createElement('button');
+        prevBtn.className = 'h-7 px-2 rounded bg-surface-container hover:bg-surface-container-high disabled:opacity-30 disabled:cursor-not-allowed text-xs font-mono';
+        prevBtn.textContent = '←';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTablePage(); } });
+        paginationControls.appendChild(prevBtn);
+
+        const pageDisplay = document.createElement('span');
+        pageDisplay.className = 'px-2 text-xs font-mono text-outline';
+        pageDisplay.textContent = `${currentPage} / ${totalPages}`;
+        paginationControls.appendChild(pageDisplay);
+
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'h-7 px-2 rounded bg-surface-container hover:bg-surface-container-high disabled:opacity-30 disabled:cursor-not-allowed text-xs font-mono';
+        nextBtn.textContent = '→';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderTablePage(); } });
+        paginationControls.appendChild(nextBtn);
+
+        // Attach Inspect Modal Listeners
+        document.querySelectorAll('.btn-inspect-json').forEach(b => {
+          b.addEventListener('click', () => {
+            const idx = parseInt(b.getAttribute('data-idx'), 10);
+            const item = currentFilteredData[idx];
+            if (!item) return;
+            document.getElementById('json-modal-content').textContent = JSON.stringify(item, null, 2);
+            document.getElementById('json-modal-link').href = item.tweet_url || '#';
+            document.getElementById('json-modal').classList.remove('hidden');
+          });
+        });
+      }
+
+      tableSearchInput.addEventListener('input', applyTableFiltersAndRender);
+      tableSortSelect.addEventListener('change', applyTableFiltersAndRender);
       btnToggleInteractions.addEventListener('click', () => {
         filterOnlyInteractions = !filterOnlyInteractions;
-        if (filterOnlyInteractions) {
-          btnToggleInteractions.classList.add('border-primary', 'text-primary');
-        } else {
-          btnToggleInteractions.classList.remove('border-primary', 'text-primary');
-        }
-        applyFiltersAndRender();
+        btnToggleInteractions.classList.toggle('bg-primary/20', filterOnlyInteractions);
+        btnToggleInteractions.classList.toggle('text-primary', filterOnlyInteractions);
+        applyTableFiltersAndRender();
       });
-
       rowsPerPageSelect.addEventListener('change', (e) => {
         rowsPerPage = parseInt(e.target.value, 10);
         currentPage = 1;
         renderTablePage();
       });
 
-      function renderTablePage() {
-        tableBody.innerHTML = '';
-        const total = filteredTweets.length;
-        const totalPages = Math.ceil(total / rowsPerPage) || 1;
-        if (currentPage > totalPages) currentPage = totalPages;
-
-        const startIdx = (currentPage - 1) * rowsPerPage;
-        const endIdx = Math.min(startIdx + rowsPerPage, total);
-
-        document.getElementById('page-range').textContent = total > 0 ? `${startIdx + 1}-${endIdx}` : '0-0';
-        document.getElementById('page-total').textContent = total.toLocaleString();
-
-        const currentSlice = filteredTweets.slice(startIdx, endIdx);
-
-        if (currentSlice.length === 0) {
-          tableBody.innerHTML = `<tr><td colspan="10" class="px-4 py-8 text-center text-outline font-mono">Tidak ada tweet yang cocok dengan kriteria pencarian.</td></tr>`;
-        } else {
-          currentSlice.forEach((tweet, index) => {
-            const tr = document.createElement('tr');
-            tr.className = 'hover:bg-surface-container-low/40 transition-colors group';
-            
-            const tweetId = tweet.id || '-';
-            const username = tweet.username ? `@${tweet.username}` : '@anonymous';
-            const fullText = tweet.full_text || '';
-            const likes = tweet.likes != null ? Number(tweet.likes).toLocaleString() : '0';
-            const retweets = tweet.retweets != null ? Number(tweet.retweets).toLocaleString() : '0';
-            const replies = tweet.replies != null ? Number(tweet.replies).toLocaleString() : '0';
-            const views = tweet.views || '0';
-            const tweetUrl = tweet.tweet_url || `https://twitter.com/${tweet.username}/status/${tweet.id}`;
-            const timeStr = tweet.created_at ? tweet.created_at.split(' ').slice(1, 3).join(' ') : 'Rec';
-
-            tr.innerHTML = `
-              <td class="px-4 py-3 align-top font-mono text-outline text-xs">${startIdx + index + 1}</td>
-              <td class="px-3 py-3 align-top font-mono text-outline-variant text-[11px] whitespace-nowrap">
-                <span class="text-on-surface-variant font-medium">${tweetId}</span>
-              </td>
-              <td class="px-3 py-3 align-top font-mono text-outline text-[11px] whitespace-nowrap">${timeStr}</td>
-              <td class="px-3 py-3 align-top whitespace-nowrap">
-                <div class="flex items-center gap-1 font-mono text-primary text-[12px]">
-                  <a href="${tweetUrl}" target="_blank" class="hover:underline">${username}</a>
-                </div>
-              </td>
-              <td class="px-4 py-3 align-top text-on-surface leading-relaxed max-w-md">
-                <p class="line-clamp-2">${escapeHtml(fullText)}</p>
-              </td>
-              <td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">${replies}</td>
-              <td class="px-3 py-3 align-top font-mono text-on-surface-variant text-right">${retweets}</td>
-              <td class="px-3 py-3 align-top font-mono text-on-surface text-right font-medium">${likes}</td>
-              <td class="px-3 py-3 align-top font-mono text-outline text-right">${views}</td>
-              <td class="px-4 py-3 align-top text-center whitespace-nowrap">
-                <button type="button" class="btn-inspect-json inline-flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded bg-surface-container text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high border border-outline-variant/30 transition-colors cursor-pointer">
-                  <span>JSON</span>
-                  <span class="material-symbols-outlined text-[12px]">chevron_right</span>
-                </button>
-              </td>
-            `;
-
-            tr.querySelector('.btn-inspect-json').addEventListener('click', () => {
-              document.getElementById('json-modal-title').textContent = `Tweet ID: ${tweetId}`;
-              document.getElementById('json-modal-content').textContent = JSON.stringify(tweet, null, 2);
-              document.getElementById('json-modal-link').href = tweetUrl;
-              document.getElementById('json-modal').classList.remove('hidden');
-            });
-
-            tableBody.appendChild(tr);
-          });
-        }
-
-        renderPaginationControls(totalPages);
-      }
-
-      function renderPaginationControls(totalPages) {
-        const ctrl = document.getElementById('pagination-controls');
-        ctrl.innerHTML = `
-          <button id="pg-first" class="p-1 rounded bg-surface-container text-outline hover:text-on-surface border border-outline-variant/30 disabled:opacity-40" ${currentPage === 1 ? 'disabled' : ''}>
-            <span class="material-symbols-outlined text-[16px]">first_page</span>
-          </button>
-          <button id="pg-prev" class="p-1 rounded bg-surface-container text-outline hover:text-on-surface border border-outline-variant/30 disabled:opacity-40" ${currentPage === 1 ? 'disabled' : ''}>
-            <span class="material-symbols-outlined text-[16px]">chevron_left</span>
-          </button>
-          <span class="px-2 text-outline font-mono text-xs">Halaman ${currentPage} / ${totalPages}</span>
-          <button id="pg-next" class="p-1 rounded bg-surface-container text-outline hover:text-on-surface border border-outline-variant/30 disabled:opacity-40" ${currentPage === totalPages ? 'disabled' : ''}>
-            <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-          </button>
-          <button id="pg-last" class="p-1 rounded bg-surface-container text-outline hover:text-on-surface border border-outline-variant/30 disabled:opacity-40" ${currentPage === totalPages ? 'disabled' : ''}>
-            <span class="material-symbols-outlined text-[16px]">last_page</span>
-          </button>
-        `;
-
-        document.getElementById('pg-first').onclick = () => { currentPage = 1; renderTablePage(); };
-        document.getElementById('pg-prev').onclick = () => { if (currentPage > 1) { currentPage--; renderTablePage(); } };
-        document.getElementById('pg-next').onclick = () => { if (currentPage < totalPages) { currentPage++; renderTablePage(); } };
-        document.getElementById('pg-last').onclick = () => { currentPage = totalPages; renderTablePage(); };
-      }
-
-      // Export JSON
-      btnExportJson.addEventListener('click', () => {
-        const filteredData = parsedTweets.map(t => {
-          const row = {};
-          activeColumns.forEach(c => row[c] = t[c] !== undefined ? t[c] : '');
-          return row;
-        });
-        const blob = new Blob([JSON.stringify(filteredData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `tweets_extracted_${filteredData.length}_records.json`;
-        a.click();
-      });
-
-      // Export CSV
+      // CSV Export
       btnExportCsv.addEventListener('click', () => {
-        if (parsedTweets.length === 0) return;
-        const headers = activeColumns;
-        const rows = parsedTweets.map(t => {
-          return headers.map(h => {
-            const val = t[h] !== undefined ? String(t[h]) : '';
-            return `"${val.replace(/"/g, '""')}"`;
-          }).join(',');
+        if (currentFilteredData.length === 0) return alert('Tidak ada data untuk diekspor.');
+        const cols = activeColumns;
+        const csvRows = [];
+        csvRows.push(cols.join(','));
+
+        currentFilteredData.forEach(item => {
+          const row = cols.map(c => {
+            let val = item[c] !== undefined ? String(item[c]) : '';
+            val = val.replace(/"/g, '""');
+            return `"${val}"`;
+          });
+          csvRows.push(row.join(','));
         });
-        const csvContent = [headers.join(','), ...rows].join('\n');
+
+        const csvContent = '\uFEFF' + csvRows.join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = `tweets_extracted_${parsedTweets.length}_records.csv`;
+        a.href = URL.createObjectURL(blob);
+        a.download = `dataset_${activePlatform}_${Date.now()}.csv`;
         a.click();
       });
 
-      function escapeHtml(str) {
-        return str
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
-      }
+      // JSON Export
+      btnExportJson.addEventListener('click', () => {
+        if (currentFilteredData.length === 0) return alert('Tidak ada data untuk diekspor.');
+        const exported = currentFilteredData.map(item => {
+          const obj = {};
+          activeColumns.forEach(c => { obj[c] = item[c]; });
+          return obj;
+        });
+        const blob = new Blob([JSON.stringify(exported, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `dataset_${activePlatform}_${Date.now()}.json`;
+        a.click();
+      });
+
     })();
   </script>
 </body>

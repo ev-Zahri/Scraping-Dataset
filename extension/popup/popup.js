@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
   btnOpenDashboard.addEventListener('click', (e) => {
     e.preventDefault();
-    chrome.tabs.create({ url: 'https://scraping-dataset-zeta.vercel.app/' });
+    chrome.tabs.create({ url: 'https://scraping-dataset.vercel.app/' });
   });
 
   // Storage listener real-time
